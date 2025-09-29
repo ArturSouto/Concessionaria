@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultas</title>
+    <style>
+        body {
+            background-color: #1b1b1b;
+            color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+        }
+        pre {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        h3 {
+            color: #0077ff;
+        }
+    </style>
+</head>
+<body>
+<h3>Consultas SQL</h3>
+<pre>
+SELECT nome FROM Cliente;
+
+SELECT modelo FROM Veiculo;
+
+SELECT c.Nome, v.modelo
+FROM Cliente c
+JOIN Vende vd ON c.CPF = vd.CPF
+JOIN Veiculo v ON vd.id = v.id;
+
+SELECT AVG(salario) AS media_salario
+FROM Funcionario;
+  </pre>
+</body>
+</html>

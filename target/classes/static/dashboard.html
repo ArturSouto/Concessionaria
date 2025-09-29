@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas e Gráficos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1b1b1b;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        select.form-select {
+            background-color: #1b1b1b;
+            color: #fff;
+            border: 1px solid #555;
+            margin-bottom: 20px;
+        }
+
+        select.form-select:focus {
+            border-color: #0077ff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 119, 255, 0.25);
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+            background-color: #1b1b1b;
+            display: none;
+        }
+
+        .graficos {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .grafico {
+            background-color: #1b1b1b;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .grafico h5 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .grafico img {
+            max-width: 100%;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+
+        .btn-dark {
+            background-color: #0077ff !important;
+            border: none;
+        }
+
+        .btn-dark:hover {
+            background-color: #005ecc !important;
+        }
+
+        footer {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="btn btn-dark">Voltar ao Início</a>
+</nav>
+
+<div class="container">
+    <h2>Consultas e Gráficos</h2>
+
+    <label for="seletor" class="form-label">Selecione o que deseja visualizar:</label>
+    <select id="seletor" class="form-select">
+        <option value="">-- Escolha uma opção --</option>
+        <option value="consultas">Consultas</option>
+        <option value="graficos">Gráficos</option>
+    </select>
+
+    <!-- Consultas -->
+    <iframe id="iframeConsultas" src="" href="consultas.html"></iframe>
+
+
+    <div id="areaGraficos" class="graficos">
+        <div class="row">
+            <div class="col-md-6 grafico">
+                <h5>Gráfico sobre Ano de Fabricação x Quilômetros Percorridos</h5>
+                <img src="/images/ANO vs Km.png" alt="Gráfico 1">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico sobre Ano de Fabricação x Valor de Mercado</h5>
+                <img src="/images/ANO VS VALOR.png" alt="Gráfico 2">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico sobre Cilindradas das Motos x Valor de Mercado</h5>
+                <img src="/images/CILINDRADA vs VALOR.png" alt="Gráfico 3">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico sobre Quilômetros Percorridos x Valor de Mercado</h5>
+                <img src="/images/KM vs VALOR.png" alt="Gráfico 4">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico sobre Valor de Compra x Valor de Mercado</h5>
+                <img src="/images/VALOR_COMPRA vs VALOR.png" alt="Gráfico 5">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Histograma sobre os Anos de Fabricação dos Veículos</h5>
+                <img src="/images/Histograma Ano.png" alt="Gráfico 6">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Histograma sobre Cambio dos Veículos</h5>
+                <img src="/images/Histograma Cambio.png" alt="Gráfico 7">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Histograma sobre Combustível Utilizado pelos Veículos</h5>
+                <img src="/images/Histograma Combustivel.png" alt="Gráfico 8">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Histograma sobre Cor dos Veículos</h5>
+                <img src="/images/Histograma Cor.png" alt="Gráfico 9">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Histograma sobre Quilômetros Percorridos pelo Veículo</h5>
+                <img src="/images/Histograma KM.png" alt="Gráfico 10">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico de Pizza sobre Cambio dos Carros</h5>
+                <img src="/images/Pizza Cambio.png" alt="Gráfico 11">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico de Pizza sobre Combustível Utilizado pelos Veículos</h5>
+                <img src="/images/Pizza Combustivel.png" alt="Gráfico 12">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico de Pizza do Estado do Veículo</h5>
+                <img src="/images/Pizza Estado.png" alt="Gráfico 13">
+            </div>
+            <div class="col-md-6 grafico">
+                <h5>Gráfico sobre Valor de Compra x Ano (Gráfico diferente)</h5>
+                <img src="/images/valor_compra vs ano (DIF).png" alt="Gráfico 14">
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 - AutoPrime
+</footer>
+
+<script>
+    const seletor = document.getElementById("seletor");
+    const iframeConsultas = document.getElementById("iframeConsultas");
+    const areaGraficos = document.getElementById("areaGraficos");
+
+    seletor.addEventListener("change", () => {
+        if (seletor.value === "consultas") {
+            iframeConsultas.style.display = "block";
+            areaGraficos.style.display = "none";
+            iframeConsultas.src = "consultas.html"; // coloque o caminho da sua página de consultas
+        } else if (seletor.value === "graficos") {
+            iframeConsultas.style.display = "none";
+            areaGraficos.style.display = "block";
+        } else {
+            iframeConsultas.style.display = "none";
+            areaGraficos.style.display = "none";
+        }
+    });
+</script>
+
+</body>
+</html>
