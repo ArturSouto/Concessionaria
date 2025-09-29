@@ -1,28 +1,31 @@
-
 package com.concessionaria.service;
 
-import com.concessionaria.repository.FornecedorRepository;
 import com.concessionaria.model.Fornecedor;
-import java.util.Optional;
+import com.concessionaria.repository.FornecedorRepository;
+
 import java.util.List;
-import java.util.ArrayList;
 
-public class FornecedorService {{
-    private FornecedorRepository repo = new FornecedorRepository();
+public class FornecedorService {
 
-    public boolean create(Fornecedor obj) {{
-        return repo.insert(obj);
-    }}
+    private final FornecedorRepository fornecedorRepository = new FornecedorRepository();
 
-    public Optional<Fornecedor> findById(String id) {{
-        return repo.findById(id);
-    }}
+    public void salvarFornecedor(Fornecedor fornecedor) {
+        fornecedorRepository.salvar(fornecedor);
+    }
 
-    public boolean update(Fornecedor obj) {{
-        return repo.update(obj);
-    }}
+    public void atualizarFornecedor(Fornecedor fornecedor) {
+        fornecedorRepository.atualizar(fornecedor);
+    }
 
-    public boolean delete(String id) {{
-        return repo.delete(id);
-    }}
-}}
+    public void deletarFornecedor(String cnpj) {
+        fornecedorRepository.deletar(cnpj);
+    }
+
+    public List<Fornecedor> listarTodos() {
+        return fornecedorRepository.listarTodos();
+    }
+
+    public Fornecedor buscarPorCnpj(String cnpj) {
+        return fornecedorRepository.buscarPorCnpj(cnpj);
+    }
+}

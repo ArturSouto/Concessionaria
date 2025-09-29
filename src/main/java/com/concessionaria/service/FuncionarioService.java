@@ -1,28 +1,26 @@
-
 package com.concessionaria.service;
 
-import com.concessionaria.repository.FuncionarioRepository;
 import com.concessionaria.model.Funcionario;
-import java.util.Optional;
+import com.concessionaria.repository.FuncionarioRepository;
+
 import java.util.List;
-import java.util.ArrayList;
 
-public class FuncionarioService {{
-    private FuncionarioRepository repo = new FuncionarioRepository();
+public class FuncionarioService {
+    private final FuncionarioRepository funcionarioRepository = new FuncionarioRepository();
 
-    public boolean create(Funcionario obj) {{
-        return repo.insert(obj);
-    }}
+    public void salvarFuncionario(Funcionario funcionario) {
+        funcionarioRepository.salvar(funcionario);
+    }
 
-    public Optional<Funcionario> findById(String id) {{
-        return repo.findById(id);
-    }}
+    public void atualizarFuncionario(Funcionario funcionario) {
+        funcionarioRepository.atualizar(funcionario);
+    }
 
-    public boolean update(Funcionario obj) {{
-        return repo.update(obj);
-    }}
+    public void deletarFuncionario(String cpf) {
+        funcionarioRepository.deletar(cpf);
+    }
 
-    public boolean delete(String id) {{
-        return repo.delete(id);
-    }}
-}}
+    public List<Funcionario> listarTodos() {
+        return funcionarioRepository.listarTodos();
+    }
+}

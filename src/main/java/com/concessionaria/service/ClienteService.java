@@ -1,28 +1,31 @@
-
 package com.concessionaria.service;
 
-import com.concessionaria.repository.ClienteRepository;
 import com.concessionaria.model.Cliente;
-import java.util.Optional;
+import com.concessionaria.repository.ClienteRepository;
+
 import java.util.List;
-import java.util.ArrayList;
 
-public class ClienteService {{
-    private ClienteRepository repo = new ClienteRepository();
+public class ClienteService {
 
-    public boolean create(Cliente obj) {{
-        return repo.insert(obj);
-    }}
+    private final ClienteRepository clienteRepository = new ClienteRepository();
 
-    public Optional<Cliente> findById(String id) {{
-        return repo.findById(id);
-    }}
+    // Salvar novo cliente
+    public void salvarCliente(Cliente cliente) {
+        clienteRepository.inserir(cliente);
+    }
 
-    public boolean update(Cliente obj) {{
-        return repo.update(obj);
-    }}
+    // Atualizar cliente
+    public void atualizarCliente(Cliente cliente) {
+        clienteRepository.atualizar(cliente);
+    }
 
-    public boolean delete(String id) {{
-        return repo.delete(id);
-    }}
-}}
+    // Deletar cliente por CPF
+    public void deletarCliente(String cpf) {
+        clienteRepository.deletar(cpf);
+    }
+
+    // Listar todos os clientes
+    public List<Cliente> listarTodos() {
+        return clienteRepository.listar();
+    }
+}

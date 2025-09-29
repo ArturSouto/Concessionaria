@@ -1,26 +1,42 @@
-
 package com.concessionaria.controller;
 
-import com.concessionaria.service.FornecedorService;
 import com.concessionaria.model.Fornecedor;
-import java.util.Optional;
+import com.concessionaria.service.FornecedorService;
+import org.springframework.web.bind.annotation.*;
 
-public class FornecedorController {{
-    private FornecedorService service = new FornecedorService();
+import java.util.List;
 
-    public boolean create(Fornecedor obj) {{
-        return service.create(obj);
-    }}
+@RestController
+@RequestMapping("/fornecedores")
+public class FornecedorController {
 
-    public Optional<Fornecedor> getById(String id) {{
-        return service.findById(id);
-    }}
+    private final FornecedorService fornecedorService = new FornecedorService();
 
-    public boolean update(Fornecedor obj) {{
-        return service.update(obj);
-    }}
+    @PostMapping
+    public String salvarFornecedor(@RequestBody Fornecedor fornecedor) {
+        fornecedorService.salvarFornecedor(fornecedor);
+        return "Fornecedor salvo com sucesso!";
+    }
 
-    public boolean delete(String id) {{
-        return service.delete(id);
-    }}
-}}
+    @PutMapping
+    public String atualizarFornecedor(@RequestBody Fornecedor fornecedor) {
+        fornecedorService.atualizarFornecedor(fornecedor);
+        return "Fornecedor atualizado com sucesso!";
+    }
+
+    @DeleteMapping("/{cnpj}")
+    public String deletarFornecedor(@PathVariable String cnpj) {
+        fornecedorService.deletarFornecedor(cnpj);
+        return "Fornecedor deletado com sucesso!";
+    }
+
+    @GetMapping
+    public List<Fornecedor> listarFornecedores() {
+        return fornecedorService.listarTodos();
+    }
+
+    @GetMapping("/{cnpj}")
+    public Fornecedor buscarPorCnpj(@PathVariable String cnpj) {
+        return fornecedorService.buscarPorCnpj(cnpj);
+    }
+}

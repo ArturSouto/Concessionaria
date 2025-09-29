@@ -1,84 +1,102 @@
-
 package com.concessionaria.repository;
 
 import com.concessionaria.config.ConexaoBD;
 import com.concessionaria.model.Cliente;
-import java.sql.*;
-import java.util.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClienteRepository {
 
-    public boolean insert(Cliente obj) {
+    // Inserir cliente
+    public void inserir(Cliente cliente) {
         String sql = "INSERT INTO Cliente (CPF, Nome, idade, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, obj.getCPF());
-            ps.setString(2, obj.getNome());
-            ps.setInt(3, obj.getIdade());
-            if (obj.getEnderecoCEP() != null) ps.setInt(4, obj.getEnderecoCEP()); else ps.setNull(4, Types.INTEGER);
-            ps.setString(5, obj.getEnderecoBairro());
-            ps.setString(6, obj.getEnderecoRua());
-            if (obj.getEnderecoNumero() != null) ps.setInt(7, obj.getEnderecoNumero()); else ps.setNull(7, Types.INTEGER);
-            ps.executeUpdate();
-            return true;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cliente.getCpf());
+            stmt.setString(2, cliente.getNome());
+            stmt.setInt(3, cliente.getIdade());
+            stmt.setString(4, cliente.getEnderecoCEP());
+            stmt.setString(5, cliente.getEnderecoBairro());
+            stmt.setString(6, cliente.getEnderecoRua());
+            stmt.setString(7, cliente.getEnderecoNumero());
+
+            stmt.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
-    public Optional<Cliente> findById(String id) {
-        String sql = "SELECT * FROM Cliente WHERE CPF = ?";
+    // Atualizar cliente
+    public void atualizar(Cliente cliente) {
+        String sql = "UPDATE Cliente SET Nome=?, idade=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=? WHERE CPF=?";
+
         try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Cliente obj = new Cliente();
-                obj.setCPF(rs.getString("CPF"));
-                obj.setNome(rs.getString("Nome"));
-                obj.setIdade(rs.getInt("idade"));
-                obj.setEnderecoCEP(rs.getObject("enderecoCEP") == null ? null : rs.getInt("enderecoCEP"));
-                obj.setEnderecoBairro(rs.getString("enderecoBairro"));
-                obj.setEnderecoRua(rs.getString("enderecoRua"));
-                obj.setEnderecoNumero(rs.getObject("enderecoNumero") == null ? null : rs.getInt("enderecoNumero"));
-                return Optional.of(obj);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cliente.getNome());
+            stmt.setInt(2, cliente.getIdade());
+            stmt.setString(3, cliente.getEnderecoCEP());
+            stmt.setString(4, cliente.getEnderecoBairro());
+            stmt.setString(5, cliente.getEnderecoRua());
+            stmt.setString(6, cliente.getEnderecoNumero());
+            stmt.setString(7, cliente.getCpf());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Deletar cliente
+    public void deletar(String cpf) {
+        String sql = "DELETE FROM Cliente WHERE CPF=?";
+
+        try (Connection conn = ConexaoBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, cpf);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Listar clientes
+    public List<Cliente> listar() {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT * FROM Cliente";
+
+        try (Connection conn = ConexaoBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setCpf(rs.getString("CPF"));
+                cliente.setNome(rs.getString("Nome"));
+                cliente.setIdade(rs.getInt("idade"));
+                cliente.setEnderecoCEP(rs.getString("enderecoCEP"));
+                cliente.setEnderecoBairro(rs.getString("enderecoBairro"));
+                cliente.setEnderecoRua(rs.getString("enderecoRua"));
+                cliente.setEnderecoNumero(rs.getString("enderecoNumero"));
+
+                clientes.add(cliente);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }
 
-    public boolean update(Cliente obj) {
-        String sql = "UPDATE Cliente SET Nome = ?, idade = ?, enderecoCEP = ?, enderecoBairro = ?, enderecoRua = ?, enderecoNumero = ? WHERE CPF = ?";
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, obj.getNome());
-            ps.setInt(2, obj.getIdade());
-            if (obj.getEnderecoCEP() != null) ps.setInt(3, obj.getEnderecoCEP()); else ps.setNull(3, Types.INTEGER);
-            ps.setString(4, obj.getEnderecoBairro());
-            ps.setString(5, obj.getEnderecoRua());
-            if (obj.getEnderecoNumero() != null) ps.setInt(6, obj.getEnderecoNumero()); else ps.setNull(6, Types.INTEGER);
-            ps.setString(7, obj.getCPF());
-            ps.executeUpdate();
-            return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
-    }
 
-    public boolean delete(String id) {
-        String sql = "DELETE FROM Cliente WHERE CPF = ?";
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return clientes;
     }
 }

@@ -1,26 +1,37 @@
-
 package com.concessionaria.controller;
 
-import com.concessionaria.service.FuncionarioService;
 import com.concessionaria.model.Funcionario;
-import java.util.Optional;
+import com.concessionaria.service.FuncionarioService;
+import org.springframework.web.bind.annotation.*;
 
-public class FuncionarioController {{
-    private FuncionarioService service = new FuncionarioService();
+import java.util.List;
 
-    public boolean create(Funcionario obj) {{
-        return service.create(obj);
-    }}
+@RestController
+@RequestMapping("/funcionarios")
+public class FuncionarioController {
 
-    public Optional<Funcionario> getById(String id) {{
-        return service.findById(id);
-    }}
+    private final FuncionarioService funcionarioService = new FuncionarioService();
 
-    public boolean update(Funcionario obj) {{
-        return service.update(obj);
-    }}
+    @PostMapping
+    public String salvarFuncionario(@RequestBody Funcionario funcionario) {
+        funcionarioService.salvarFuncionario(funcionario);
+        return "Funcionario salvo com sucesso!";
+    }
 
-    public boolean delete(String id) {{
-        return service.delete(id);
-    }}
-}}
+    @PutMapping
+    public String atualizarFuncionario(@RequestBody Funcionario funcionario) {
+        funcionarioService.atualizarFuncionario(funcionario);
+        return "Funcionario atualizado com sucesso!";
+    }
+
+    @DeleteMapping("/{cpf}")
+    public String deletarFuncionario(@PathVariable String cpf) {
+        funcionarioService.deletarFuncionario(cpf);
+        return "Funcionario deletado com sucesso!";
+    }
+
+    @GetMapping
+    public List<Funcionario> listarFuncionarios() {
+        return funcionarioService.listarTodos();
+    }
+}

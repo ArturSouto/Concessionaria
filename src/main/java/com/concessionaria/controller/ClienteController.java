@@ -1,26 +1,37 @@
-
 package com.concessionaria.controller;
 
-import com.concessionaria.service.ClienteService;
 import com.concessionaria.model.Cliente;
-import java.util.Optional;
+import com.concessionaria.service.ClienteService;
+import org.springframework.web.bind.annotation.*;
 
-public class ClienteController {{
-    private ClienteService service = new ClienteService();
+import java.util.List;
 
-    public boolean create(Cliente obj) {{
-        return service.create(obj);
-    }}
+@RestController
+@RequestMapping("/clientes")
+public class ClienteController {
 
-    public Optional<Cliente> getById(String id) {{
-        return service.findById(id);
-    }}
+    private final ClienteService clienteService = new ClienteService();
 
-    public boolean update(Cliente obj) {{
-        return service.update(obj);
-    }}
+    @PostMapping
+    public String salvarCliente(@RequestBody Cliente cliente) {
+        clienteService.salvarCliente(cliente);
+        return "Cliente salvo com sucesso!";
+    }
 
-    public boolean delete(String id) {{
-        return service.delete(id);
-    }}
-}}
+    @PutMapping
+    public String atualizarCliente(@RequestBody Cliente cliente) {
+        clienteService.atualizarCliente(cliente);
+        return "Cliente atualizado com sucesso!";
+    }
+
+    @DeleteMapping("/{cpf}")
+    public String deletarCliente(@PathVariable String cpf) {
+        clienteService.deletarCliente(cpf);
+        return "Cliente deletado com sucesso!";
+    }
+
+    @GetMapping
+    public List<Cliente> listarClientes() {
+        return clienteService.listarTodos();
+    }
+}

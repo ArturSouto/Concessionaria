@@ -1,19 +1,22 @@
 package com.concessionaria.model;
 
 public class Fornecedor {
-    private String CNPJ;
-    private String Nome;
-    private String Nome_Fantasia;
-    private String Telefone;
+    private String cnpj;
+    private String nome;
+    private String nomeFantasia;
+    private String telefone;
 
     public Fornecedor() {}
 
-    public String getCNPJ() { return CNPJ; }
-    public void setCNPJ(String CNPJ) { this.CNPJ = CNPJ; }
-    public String getNome() { return Nome; }
-    public void setNome(String nome) { Nome = nome; }
-    public String getNome_Fantasia() { return Nome_Fantasia; }
-    public void setNome_Fantasia(String nome_Fantasia) { Nome_Fantasia = nome_Fantasia; }
-    public String getTelefone() { return Telefone; }
-    public void setTelefone(String telefone) { Telefone = telefone; }
+    public String getCnpj() { return cnpj; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getNomeFantasia() { return nomeFantasia; }
+    public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
 }

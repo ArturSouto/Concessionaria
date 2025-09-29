@@ -1,28 +1,33 @@
 package com.concessionaria.model;
 
 public class Cliente {
-    private String CPF;
-    private String Nome;
+    private String cpf;
+    private String nome;
     private int idade;
-    private Integer enderecoCEP;
+    private String enderecoCEP;
     private String enderecoBairro;
     private String enderecoRua;
-    private Integer enderecoNumero;
+    private String enderecoNumero;
 
-    public Cliente() {}
+    // Getters e setters
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 
-    public String getCPF() { return CPF; }
-    public void setCPF(String cPF) { CPF = cPF; }
-    public String getNome() { return Nome; }
-    public void setNome(String nome) { Nome = nome; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
     public int getIdade() { return idade; }
     public void setIdade(int idade) { this.idade = idade; }
-    public Integer getEnderecoCEP() { return enderecoCEP; }
-    public void setEnderecoCEP(Integer enderecoCEP) { this.enderecoCEP = enderecoCEP; }
+
+    public String getEnderecoCEP() { return enderecoCEP; }
+    public void setEnderecoCEP(String enderecoCEP) { this.enderecoCEP = enderecoCEP; }
+
     public String getEnderecoBairro() { return enderecoBairro; }
     public void setEnderecoBairro(String enderecoBairro) { this.enderecoBairro = enderecoBairro; }
+
     public String getEnderecoRua() { return enderecoRua; }
     public void setEnderecoRua(String enderecoRua) { this.enderecoRua = enderecoRua; }
-    public Integer getEnderecoNumero() { return enderecoNumero; }
-    public void setEnderecoNumero(Integer enderecoNumero) { this.enderecoNumero = enderecoNumero; }
+
+    public String getEnderecoNumero() { return enderecoNumero; }
+    public void setEnderecoNumero(String enderecoNumero) { this.enderecoNumero = enderecoNumero; }
 }

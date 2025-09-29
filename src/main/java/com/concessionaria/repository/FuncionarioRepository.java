@@ -1,90 +1,86 @@
-
 package com.concessionaria.repository;
 
-import com.concessionaria.config.ConexaoBD;
 import com.concessionaria.model.Funcionario;
+import com.concessionaria.config.ConexaoBD;
+
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FuncionarioRepository {
 
-    public boolean insert(Funcionario obj) {
-        String sql = "INSERT INTO Funcionario (CPF, salario, cargo, contratacao, SupervisorCPF, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void salvar(Funcionario funcionario) {
+        String sql = "INSERT INTO Funcionario (CPF, salario, cargo, contratacao, SupervisorCPF, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, obj.getCPF());
-            ps.setInt(2, obj.getSalario());
-            ps.setString(3, obj.getCargo());
-            ps.setString(4, obj.getContratacao());
-            ps.setString(5, obj.getSupervisorCPF());
-            if (obj.getEnderecoCEP() != null) ps.setInt(6, obj.getEnderecoCEP()); else ps.setNull(6, Types.INTEGER);
-            ps.setString(7, obj.getEnderecoBairro());
-            ps.setString(8, obj.getEnderecoRua());
-            if (obj.getEnderecoNumero() != null) ps.setInt(9, obj.getEnderecoNumero()); else ps.setNull(9, Types.INTEGER);
-            ps.executeUpdate();
-            return true;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, funcionario.getCpf());
+            stmt.setInt(2, funcionario.getSalario());
+            stmt.setString(3, funcionario.getCargo());
+            stmt.setString(4, funcionario.getContratacao());
+            stmt.setString(5, funcionario.getSupervisorCPF());
+            stmt.setString(6, funcionario.getEnderecoCEP());
+            stmt.setString(7, funcionario.getEnderecoBairro());
+            stmt.setString(8, funcionario.getEnderecoRua());
+            stmt.setInt(9, funcionario.getEnderecoNumero());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
-    public Optional<Funcionario> findById(String id) {
-        String sql = "SELECT * FROM Funcionario WHERE CPF = ?";
+    public void atualizar(Funcionario funcionario) {
+        String sql = "UPDATE Funcionario SET salario=?, cargo=?, contratacao=?, SupervisorCPF=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=? WHERE CPF=?";
         try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Funcionario obj = new Funcionario();
-                obj.setCPF(rs.getString("CPF"));
-                obj.setSalario(rs.getInt("salario"));
-                obj.setCargo(rs.getString("cargo"));
-                obj.setContratacao(rs.getString("contratacao"));
-                obj.setSupervisorCPF(rs.getString("SupervisorCPF"));
-                obj.setEnderecoCEP(rs.getObject("enderecoCEP") == null ? null : rs.getInt("enderecoCEP"));
-                obj.setEnderecoBairro(rs.getString("enderecoBairro"));
-                obj.setEnderecoRua(rs.getString("enderecoRua"));
-                obj.setEnderecoNumero(rs.getObject("enderecoNumero") == null ? null : rs.getInt("enderecoNumero"));
-                return Optional.of(obj);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, funcionario.getSalario());
+            stmt.setString(2, funcionario.getCargo());
+            stmt.setString(3, funcionario.getContratacao());
+            stmt.setString(4, funcionario.getSupervisorCPF());
+            stmt.setString(5, funcionario.getEnderecoCEP());
+            stmt.setString(6, funcionario.getEnderecoBairro());
+            stmt.setString(7, funcionario.getEnderecoRua());
+            stmt.setInt(8, funcionario.getEnderecoNumero());
+            stmt.setString(9, funcionario.getCpf());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletar(String cpf) {
+        String sql = "DELETE FROM Funcionario WHERE CPF=?";
+        try (Connection conn = ConexaoBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Funcionario> listarTodos() {
+        List<Funcionario> funcionarios = new ArrayList<>();
+        String sql = "SELECT * FROM Funcionario";
+        try (Connection conn = ConexaoBD.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Funcionario f = new Funcionario();
+                f.setCpf(rs.getString("CPF"));
+                f.setSalario(rs.getInt("salario"));
+                f.setCargo(rs.getString("cargo"));
+                f.setContratacao(rs.getString("contratacao"));
+                f.setSupervisorCPF(rs.getString("SupervisorCPF"));
+                f.setEnderecoCEP(rs.getString("enderecoCEP"));
+                f.setEnderecoBairro(rs.getString("enderecoBairro"));
+                f.setEnderecoRua(rs.getString("enderecoRua"));
+                f.setEnderecoNumero(rs.getInt("enderecoNumero"));
+                funcionarios.add(f);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
-    }
-
-    public boolean update(Funcionario obj) {
-        String sql = "UPDATE Funcionario SET salario = ?, cargo = ?, contratacao = ?, SupervisorCPF = ?, enderecoCEP = ?, enderecoBairro = ?, enderecoRua = ?, enderecoNumero = ? WHERE CPF = ?";
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, obj.getSalario());
-            ps.setString(2, obj.getCargo());
-            ps.setString(3, obj.getContratacao());
-            ps.setString(4, obj.getSupervisorCPF());
-            if (obj.getEnderecoCEP() != null) ps.setInt(5, obj.getEnderecoCEP()); else ps.setNull(5, Types.INTEGER);
-            ps.setString(6, obj.getEnderecoBairro());
-            ps.setString(7, obj.getEnderecoRua());
-            if (obj.getEnderecoNumero() != null) ps.setInt(8, obj.getEnderecoNumero()); else ps.setNull(8, Types.INTEGER);
-            ps.setString(9, obj.getCPF());
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean delete(String id) {
-        String sql = "DELETE FROM Funcionario WHERE CPF = ?";
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return funcionarios;
     }
 }
