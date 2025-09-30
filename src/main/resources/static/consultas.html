@@ -1,41 +1,236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Consultas</title>
+    <meta charset="utf-8" />
+    <title>Consultas - Concessionária</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #1b1b1b;
-            color: #f0f0f0;
-            font-family: 'Inter', sans-serif;
-            padding: 20px;
+            background: #121212;
+            color: #e9eef8;
+            font-family: Inter, Arial, sans-serif;
+            padding: 24px;
         }
-        pre {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 15px;
-            overflow-x: auto;
+        h1 { color: #4da3ff; margin-bottom: 18px; }
+        .card { background: #1f1f1f; border: 1px solid #0033ff; }
+        table { background: transparent; }
+        th { background: #0077ff; color: #fff; }
+        td, th { vertical-align: middle; }
+        .small-note { color: #9aa7bd; font-size: 0.9rem; }
+        .spinner { width: 1rem; height: 1rem; border-width: .18rem; }
+        .error { color: #ff6b6b; }
+        .card strong {
+            color: #4da3ff;   /* azul */
+            font-size: 1.1rem;
         }
-        h3 {
-            color: #0077ff;
-        }
+
     </style>
 </head>
 <body>
-<h3>Consultas SQL</h3>
-<pre>
-SELECT nome FROM Cliente;
+<div class="container">
+    <h1>Resultados das Consultas</h1>
+    <p class="small-note"></p>
 
-SELECT modelo FROM Veiculo;
+    <div class="row g-3">
 
-SELECT c.Nome, v.modelo
-FROM Cliente c
-JOIN Vende vd ON c.CPF = vd.CPF
-JOIN Veiculo v ON vd.id = v.id;
+        <div class="col-12 col-lg-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Clientes</strong>
+                    <div>
+                        <button id="btnClientes" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingClientes" class="spinner-border spinner small spinner-border-sm spinner" role="status" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errClientes" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 320px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblClientes">
+                        <thead><tr><th>Nome</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-SELECT AVG(salario) AS media_salario
-FROM Funcionario;
-  </pre>
+        <div class="col-12 col-lg-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Veículos (Modelos)</strong>
+                    <div>
+                        <button id="btnVeiculos" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingVeiculos" class="spinner-border spinner small spinner-border-sm" role="status" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errVeiculos" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 320px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblVeiculos">
+                        <thead><tr><th>Modelo</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Compradores e Veículos</strong>
+                    <div>
+                        <button id="btnCompradores" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingCompradores" class="spinner-border spinner small spinner-border-sm" role="status" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errCompradores" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 360px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblCompradores">
+                        <thead><tr><th>Nome</th><th>Modelo</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Média Salarial</strong>
+                    <div>
+                        <button id="btnMedia" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingMedia" class="spinner-border spinner small spinner-border-sm" role="status" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errMedia" class="error mb-2" style="display:none"></div>
+                <div>
+                    <p class="fs-4" style="color:lightblue" id="valorMedia">Carregando...</p>
+                    <small class="small-note"> </small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const base = "";
+
+    // Helpers
+    function showSpinner(id, show) {
+        document.getElementById(id).style.display = show ? "inline-block" : "none";
+    }
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        if (!msg) el.style.display = "none";
+        else { el.style.display = "block"; el.textContent = msg; }
+    }
+
+    async function carregarClientes() {
+        const tbl = document.querySelector("#tblClientes tbody");
+        tbl.innerHTML = "";
+        showError("errClientes", "");
+        showSpinner("loadingClientes", true);
+        try {
+            const res = await fetch(base + "/consultas/clientes");
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            if (!Array.isArray(data)) throw new Error("Resposta inesperada");
+            data.forEach(nome => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${escapeHtml(String(nome))}</td>`;
+                tbl.appendChild(tr);
+            });
+        } catch (err) {
+            showError("errClientes", "Erro ao carregar clientes: " + err.message);
+        } finally { showSpinner("loadingClientes", false); }
+    }
+    async function carregarVeiculos() {
+        const tbl = document.querySelector("#tblVeiculos tbody");
+        tbl.innerHTML = "";
+        showError("errVeiculos", "");
+        showSpinner("loadingVeiculos", true);
+        try {
+            const res = await fetch(base + "/consultas/veiculos");
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            if (!Array.isArray(data)) throw new Error("Resposta inesperada");
+            data.forEach(modelo => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${escapeHtml(String(modelo))}</td>`;
+                tbl.appendChild(tr);
+            });
+        } catch (err) {
+            showError("errVeiculos", "Erro ao carregar veículos: " + err.message);
+        } finally { showSpinner("loadingVeiculos", false); }
+    }
+
+    async function carregarCompradores() {
+        const tbl = document.querySelector("#tblCompradores tbody");
+        tbl.innerHTML = "";
+        showError("errCompradores", "");
+        showSpinner("loadingCompradores", true);
+        try {
+            const res = await fetch(base + "/consultas/compradores");
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            if (!Array.isArray(data)) throw new Error("Resposta inesperada");
+            data.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${escapeHtml(String(item.nome || item.Nome || ''))}</td><td>${escapeHtml(String(item.modelo || ''))}</td>`;
+                tbl.appendChild(tr);
+            });
+        } catch (err) {
+            showError("errCompradores", "Erro ao carregar compradores: " + err.message);
+        } finally { showSpinner("loadingCompradores", false); }
+    }
+
+    async function carregarMedia() {
+        const out = document.getElementById("valorMedia");
+        out.textContent = "Carregando...";
+        showError("errMedia", "");
+        showSpinner("loadingMedia", true);
+        try {
+            const res = await fetch(base + "/consultas/media-salario");
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            let valor;
+            if (typeof data === "number") valor = data;
+            else if (data && typeof data === "object") {
+                if (data.media_salario !== undefined) valor = data.media_salario;
+                else if (Array.isArray(data) && data.length && data[0].media_salario !== undefined)
+                    valor = data[0].media_salario;
+                else valor = JSON.stringify(data);
+            } else valor = data;
+            if (!isNaN(Number(valor))) {
+                out.textContent = "R$ " + Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else {
+                out.textContent = String(valor);
+            }
+        } catch (err) {
+            showError("errMedia", "Erro ao carregar média: " + err.message);
+            out.textContent = "—";
+        } finally { showSpinner("loadingMedia", false); }
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>"'`=\/]/g, function(s) {
+            return ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
+                "'": '&#39;', '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
+            })[s];
+        });
+    }
+
+    document.getElementById("btnClientes").addEventListener("click", carregarClientes);
+    document.getElementById("btnVeiculos").addEventListener("click", carregarVeiculos);
+    document.getElementById("btnCompradores").addEventListener("click", carregarCompradores);
+    document.getElementById("btnMedia").addEventListener("click", carregarMedia);
+
+    window.addEventListener("load", () => {
+        carregarClientes();
+        carregarVeiculos();
+        carregarCompradores();
+        carregarMedia();
+    });
+</script>
 </body>
 </html>
