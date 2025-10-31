@@ -1,5 +1,4 @@
-USE concessionaria;
--- Questao 1 pede 2 indices fiz 4 importantes.
+-- Índices.
 -- Índice pra buscar veículos por fornecedor
 CREATE INDEX idx_veiculo_cnpj ON Veiculo(CNPJ);
 
@@ -12,7 +11,7 @@ CREATE INDEX idx_vende_cpf ON Vende(CPF);
 -- Índice pra procurar manutenções pelo ID do veículo
 CREATE INDEX idx_manutencao_id ON Manutencao(id);
 
--- questão 2 consultas:
+-- Consultas:
 -- anti join: mostra os clientes que nunca compraram nada.
 SELECT c.CPF, c.Nome, c.idade
 FROM Cliente c
@@ -60,7 +59,7 @@ HAVING total_vendido > (
 )
 ORDER BY total_vendido DESC;
 
--- 3. visões:
+-- Visões:
 -- 3.1 View de vendas (junta tudo que importa pra ver uma venda)
 CREATE OR REPLACE VIEW venda_detalhada AS
 SELECT
