@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Veículos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1b1b1b; color: #f0f0f0; font-family: 'Inter', sans-serif; }
+        .container { margin-top: 30px; }
+        h2 { text-align: center; color: #fff; margin-bottom: 20px; }
+        .card { background: #2a2a2a; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        .card input { background: #1b1b1b; border: 1px solid #555; color: #fff; }
+        .card input:read-only { background: #262626; }
+        .btn-warning { background: #ffc107; border: none; }
+        .btn-danger { background: #dc3545; border: none; }
+        .btn-success { background: #28a745; border: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Lista de Veículos</h2>
+    <div id="listaVeiculos" class="row"></div>
+</div>
+
+<script>
+    async function carregarVeiculos() {
+        const response = await fetch("/veiculos");
+        const veiculos = await response.json();
+        const lista = document.getElementById("listaVeiculos");
+        lista.innerHTML = "";
+
+        veiculos.forEach(v => {
+            const col = document.createElement("div");
+            col.className = "col-md-6";
+
+            col.innerHTML = `
+                <div class="card">
+                    <form onsubmit="return false;" class="d-flex flex-column gap-2">
+                        <input class="form-control" name="id" value="${v.id}" readonly>
+                        <input class="form-control" name="ano" value="${v.ano}" readonly>
+                        <input class="form-control" name="km" value="${v.km}" readonly>
+                        <input class="form-control" name="cor" value="${v.cor}" readonly>
+                        <input class="form-control" name="estado" value="${v.estado}" readonly>
+                        <input class="form-control" name="preco" value="${v.preco}" readonly>
+                        <input class="form-control" name="modelo" value="${v.modelo}" readonly>
+                        <input class="form-control" name="combustivel" value="${v.combustivel}" readonly>
+                        <input class="form-control" name="cnpj" value="${v.cnpj}" readonly>
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-warning" onclick="habilitarEdicao(this)">Editar</button>
+                                <button class="btn btn-success d-none" onclick="salvarEdicao(this)">Salvar</button>
+                                <button class="btn btn-secondary d-none" onclick="cancelarEdicao()">Cancelar</button>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="deletarVeiculo(${v.id})">Deletar</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            lista.appendChild(col);
+        });
+    }
+
+    function habilitarEdicao(botao) {
+        const form = botao.closest("form");
+        form.querySelectorAll("input:not([name='id'])").forEach(input => input.readOnly = false);
+        toggleBotoes(form, true);
+    }
+
+    function cancelarEdicao() {
+        carregarVeiculos();
+    }
+
+    async function salvarEdicao(botao) {
+        const form = botao.closest("form");
+        const formData = new FormData(form);
+        const veiculo = {};
+        formData.forEach((v, k) => veiculo[k] = v);
+
+        const response = await fetch("/veiculos", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(veiculo)
+        });
+
+        if (response.ok) {
+            alert("Veículo atualizado com sucesso!");
+            carregarVeiculos();
+        } else {
+            alert("Erro ao atualizar veículo.");
+        }
+    }
+
+    async function deletarVeiculo(id) {
+        if (confirm("Deseja realmente deletar este veículo?")) {
+            const response = await fetch(`/veiculos/${id}`, { method: "DELETE" });
+            if (response.ok) {
+                carregarVeiculos();
+            } else {
+                alert("Erro ao deletar veículo.");
+            }
+        }
+    }
+
+    function toggleBotoes(form, edicao) {
+        form.querySelector(".btn-warning").classList.toggle("d-none", edicao);
+        form.querySelector(".btn-success").classList.toggle("d-none", !edicao);
+        form.querySelector(".btn-secondary").classList.toggle("d-none", !edicao);
+    }
+
+    window.onload = carregarVeiculos;
+</script>
+</body>
+</html>
