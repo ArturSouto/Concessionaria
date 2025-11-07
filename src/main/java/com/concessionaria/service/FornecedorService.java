@@ -10,7 +10,7 @@ public class FornecedorService {
     private final FornecedorRepository fornecedorRepository = new FornecedorRepository();
 
     public void salvarFornecedor(Fornecedor fornecedor) {
-        fornecedorRepository.salvar(fornecedor);
+        fornecedorRepository.inserir(fornecedor);
     }
 
     public void atualizarFornecedor(Fornecedor fornecedor) {
@@ -22,7 +22,7 @@ public class FornecedorService {
     }
 
     public List<Fornecedor> listarTodos() {
-        return fornecedorRepository.listarTodos();
+        return fornecedorRepository.listar();
     }
 
     public Fornecedor buscarPorCnpj(String cnpj) {
