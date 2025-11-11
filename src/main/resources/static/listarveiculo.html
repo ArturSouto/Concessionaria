@@ -20,6 +20,7 @@
 <body>
 <div class="container">
     <h2>Lista de Veículos</h2>
+    <div id="alerta" class="alert alert-danger d-none" role="alert"></div>
     <div id="listaVeiculos" class="row"></div>
 </div>
 
@@ -38,7 +39,7 @@
                 <div class="card">
                     <form onsubmit="return false;" class="d-flex flex-column gap-2">
                         <input class="form-control" name="id" value="${v.id}" readonly>
-                        <input class="form-control" name="ano" value="${v.ano}" readonly>
+                        <input class="form-control" name="ano" type="number" value="${v.ano}" readonly>
                         <input class="form-control" name="km" value="${v.km}" readonly>
                         <input class="form-control" name="cor" value="${v.cor}" readonly>
                         <input class="form-control" name="estado" value="${v.estado}" readonly>
@@ -77,6 +78,17 @@
         const veiculo = {};
         formData.forEach((v, k) => veiculo[k] = v);
 
+        // 🧠 VALIDAÇÃO: impede salvar veículo com ano < 2010
+        const ano = parseInt(veiculo.ano);
+        const alerta = document.getElementById("alerta");
+        alerta.classList.add("d-none");
+
+        if (isNaN(ano) || ano < 2010) {
+            alerta.textContent = "❌ Ano inválido! O veículo não pode ser anterior a 2010.";
+            alerta.classList.remove("d-none");
+            return; // cancela o envio
+        }
+
         const response = await fetch("/veiculos", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -84,10 +96,12 @@
         });
 
         if (response.ok) {
-            alert("Veículo atualizado com sucesso!");
+            alerta.classList.add("d-none");
+            alert("✅ Veículo atualizado com sucesso!");
             carregarVeiculos();
         } else {
-            alert("Erro ao atualizar veículo.");
+            alerta.textContent = "⚠️ Erro ao atualizar veículo.";
+            alerta.classList.remove("d-none");
         }
     }
 

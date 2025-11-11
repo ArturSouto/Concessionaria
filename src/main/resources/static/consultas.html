@@ -5,7 +5,6 @@
     <title>Consultas - Concessionária</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
     <style>
         body {
             background: #121212;
@@ -22,26 +21,25 @@
         .spinner { width: 1rem; height: 1rem; border-width: .18rem; }
         .error { color: #ff6b6b; }
         .card strong {
-            color: #4da3ff;   /* azul */
+            color: #4da3ff;
             font-size: 1.1rem;
         }
-
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Resultados das Consultas</h1>
-    <p class="small-note"></p>
 
     <div class="row g-3">
 
+        <!-- Clientes -->
         <div class="col-12 col-lg-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Clientes</strong>
                     <div>
                         <button id="btnClientes" class="btn btn-sm btn-primary">Atualizar</button>
-                        <span id="loadingClientes" class="spinner-border spinner small spinner-border-sm spinner" role="status" style="display:none"></span>
+                        <span id="loadingClientes" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
                     </div>
                 </div>
                 <div id="errClientes" class="error mb-2" style="display:none"></div>
@@ -54,13 +52,14 @@
             </div>
         </div>
 
+        <!-- Veículos -->
         <div class="col-12 col-lg-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Veículos (Modelos)</strong>
                     <div>
                         <button id="btnVeiculos" class="btn btn-sm btn-primary">Atualizar</button>
-                        <span id="loadingVeiculos" class="spinner-border spinner small spinner-border-sm" role="status" style="display:none"></span>
+                        <span id="loadingVeiculos" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
                     </div>
                 </div>
                 <div id="errVeiculos" class="error mb-2" style="display:none"></div>
@@ -73,13 +72,14 @@
             </div>
         </div>
 
+        <!-- Compradores -->
         <div class="col-12">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Compradores e Veículos</strong>
                     <div>
                         <button id="btnCompradores" class="btn btn-sm btn-primary">Atualizar</button>
-                        <span id="loadingCompradores" class="spinner-border spinner small spinner-border-sm" role="status" style="display:none"></span>
+                        <span id="loadingCompradores" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
                     </div>
                 </div>
                 <div id="errCompradores" class="error mb-2" style="display:none"></div>
@@ -92,19 +92,101 @@
             </div>
         </div>
 
+        <!-- Média salarial -->
         <div class="col-12 col-md-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Média Salarial</strong>
                     <div>
                         <button id="btnMedia" class="btn btn-sm btn-primary">Atualizar</button>
-                        <span id="loadingMedia" class="spinner-border spinner small spinner-border-sm" role="status" style="display:none"></span>
+                        <span id="loadingMedia" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
                     </div>
                 </div>
                 <div id="errMedia" class="error mb-2" style="display:none"></div>
                 <div>
                     <p class="fs-4" style="color:lightblue" id="valorMedia">Carregando...</p>
-                    <small class="small-note"> </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clientes sem compras -->
+        <div class="col-12 col-md-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Clientes sem Compras</strong>
+                    <div>
+                        <button id="btnAntiJoin" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingAntiJoin" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errAntiJoin" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 320px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblAntiJoin">
+                        <thead><tr><th>CPF</th><th>Nome</th><th>Idade</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fornecedores e vendas -->
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Fornecedores e Vendas (Outer Join)</strong>
+                    <div>
+                        <button id="btnOuterJoin" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingOuterJoin" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errOuterJoin" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 360px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblOuterJoin">
+                        <thead>
+                        <tr><th>CNPJ</th><th>Fornecedor</th><th>ID Venda</th><th>ID Veículo</th><th>Data Venda</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veículos acima da média -->
+        <div class="col-12 col-md-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Veículos Acima da Média</strong>
+                    <div>
+                        <button id="btnVeiculosMedia" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingVeiculosMedia" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errVeiculosMedia" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 320px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblVeiculosMedia">
+                        <thead><tr><th>ID</th><th>Modelo</th><th>Combustível</th><th>Preço</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fornecedores acima da média -->
+        <div class="col-12 col-md-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Fornecedores Acima da Média</strong>
+                    <div>
+                        <button id="btnFornecedoresMedia" class="btn btn-sm btn-primary">Atualizar</button>
+                        <span id="loadingFornecedoresMedia" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errFornecedoresMedia" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 320px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblFornecedoresMedia">
+                        <thead><tr><th>CNPJ</th><th>Nome</th><th>Total Vendido</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -124,114 +206,60 @@
         if (!msg) el.style.display = "none";
         else { el.style.display = "block"; el.textContent = msg; }
     }
-
-    async function carregarClientes() {
-        const tbl = document.querySelector("#tblClientes tbody");
-        tbl.innerHTML = "";
-        showError("errClientes", "");
-        showSpinner("loadingClientes", true);
-        try {
-            const res = await fetch(base + "/consultas/clientes");
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-            if (!Array.isArray(data)) throw new Error("Resposta inesperada");
-            data.forEach(nome => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${escapeHtml(String(nome))}</td>`;
-                tbl.appendChild(tr);
-            });
-        } catch (err) {
-            showError("errClientes", "Erro ao carregar clientes: " + err.message);
-        } finally { showSpinner("loadingClientes", false); }
-    }
-    async function carregarVeiculos() {
-        const tbl = document.querySelector("#tblVeiculos tbody");
-        tbl.innerHTML = "";
-        showError("errVeiculos", "");
-        showSpinner("loadingVeiculos", true);
-        try {
-            const res = await fetch(base + "/consultas/veiculos");
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-            if (!Array.isArray(data)) throw new Error("Resposta inesperada");
-            data.forEach(modelo => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${escapeHtml(String(modelo))}</td>`;
-                tbl.appendChild(tr);
-            });
-        } catch (err) {
-            showError("errVeiculos", "Erro ao carregar veículos: " + err.message);
-        } finally { showSpinner("loadingVeiculos", false); }
+    function escapeHtml(str) {
+        return str.replace(/[&<>"'`=\/]/g, s => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
+            "'": '&#39;', '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
+        })[s]);
     }
 
-    async function carregarCompradores() {
-        const tbl = document.querySelector("#tblCompradores tbody");
+    // Funções principais
+    async function fetchTable(url, tblId, errId, spinnerId, rowFn) {
+        const tbl = document.querySelector(`#${tblId} tbody`);
         tbl.innerHTML = "";
-        showError("errCompradores", "");
-        showSpinner("loadingCompradores", true);
+        showError(errId, "");
+        showSpinner(spinnerId, true);
         try {
-            const res = await fetch(base + "/consultas/compradores");
+            const res = await fetch(base + url);
             if (!res.ok) throw new Error("HTTP " + res.status);
             const data = await res.json();
-            if (!Array.isArray(data)) throw new Error("Resposta inesperada");
-            data.forEach(item => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${escapeHtml(String(item.nome || item.Nome || ''))}</td><td>${escapeHtml(String(item.modelo || ''))}</td>`;
-                tbl.appendChild(tr);
-            });
+            data.forEach(row => tbl.insertAdjacentHTML("beforeend", rowFn(row)));
         } catch (err) {
-            showError("errCompradores", "Erro ao carregar compradores: " + err.message);
-        } finally { showSpinner("loadingCompradores", false); }
+            showError(errId, "Erro: " + err.message);
+        } finally { showSpinner(spinnerId, false); }
     }
+
+    // Chamadas
+    document.getElementById("btnClientes").onclick = () => fetchTable("/consultas/clientes", "tblClientes", "errClientes", "loadingClientes", r => `<tr><td>${escapeHtml(r)}</td></tr>`);
+    document.getElementById("btnVeiculos").onclick = () => fetchTable("/consultas/veiculos", "tblVeiculos", "errVeiculos", "loadingVeiculos", r => `<tr><td>${escapeHtml(r)}</td></tr>`);
+    document.getElementById("btnCompradores").onclick = () => fetchTable("/consultas/compradores", "tblCompradores", "errCompradores", "loadingCompradores", r => `<tr><td>${escapeHtml(r.nome || '')}</td><td>${escapeHtml(r.modelo || '')}</td></tr>`);
+    document.getElementById("btnMedia").onclick = carregarMedia;
+    document.getElementById("btnAntiJoin").onclick = () => fetchTable("/consultas/clientes-sem-compras", "tblAntiJoin", "errAntiJoin", "loadingAntiJoin", r => `<tr><td>${r.cpf}</td><td>${escapeHtml(r.nome)}</td><td>${r.idade}</td></tr>`);
+    document.getElementById("btnOuterJoin").onclick = () => fetchTable("/consultas/fornecedores-vendas", "tblOuterJoin", "errOuterJoin", "loadingOuterJoin", r => `<tr><td>${r.fornecedor_cnpj || ''}</td><td>${escapeHtml(r.fornecedor_nome || '')}</td><td>${r.idvenda || ''}</td><td>${r.veiculo_id || ''}</td><td>${r.data_venda || ''}</td><td>${r.valor_venda || ''}</td></tr>`);
+    document.getElementById("btnVeiculosMedia").onclick = () => fetchTable("/consultas/veiculos-acima-media", "tblVeiculosMedia", "errVeiculosMedia", "loadingVeiculosMedia", r => `<tr><td>${r.id}</td><td>${escapeHtml(r.modelo)}</td><td>${escapeHtml(r.combustivel)}</td><td>${r.preco}</td></tr>`);
+    document.getElementById("btnFornecedoresMedia").onclick = () => fetchTable("/consultas/fornecedores-acima-media", "tblFornecedoresMedia", "errFornecedoresMedia", "loadingFornecedoresMedia", r => `<tr><td>${r.CNPJ}</td><td>${escapeHtml(r.Nome)}</td><td>${r.total_vendido}</td></tr>`);
 
     async function carregarMedia() {
         const out = document.getElementById("valorMedia");
-        out.textContent = "Carregando...";
-        showError("errMedia", "");
         showSpinner("loadingMedia", true);
         try {
             const res = await fetch(base + "/consultas/media-salario");
-            if (!res.ok) throw new Error("HTTP " + res.status);
             const data = await res.json();
-            let valor;
-            if (typeof data === "number") valor = data;
-            else if (data && typeof data === "object") {
-                if (data.media_salario !== undefined) valor = data.media_salario;
-                else if (Array.isArray(data) && data.length && data[0].media_salario !== undefined)
-                    valor = data[0].media_salario;
-                else valor = JSON.stringify(data);
-            } else valor = data;
-            if (!isNaN(Number(valor))) {
-                out.textContent = "R$ " + Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            } else {
-                out.textContent = String(valor);
-            }
-        } catch (err) {
-            showError("errMedia", "Erro ao carregar média: " + err.message);
-            out.textContent = "—";
-        } finally { showSpinner("loadingMedia", false); }
+            out.textContent = "R$ " + Number(data).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+        } catch { out.textContent = "Erro"; }
+        finally { showSpinner("loadingMedia", false); }
     }
 
-    function escapeHtml(str) {
-        return str.replace(/[&<>"'`=\/]/g, function(s) {
-            return ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
-                "'": '&#39;', '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
-            })[s];
-        });
-    }
-
-    document.getElementById("btnClientes").addEventListener("click", carregarClientes);
-    document.getElementById("btnVeiculos").addEventListener("click", carregarVeiculos);
-    document.getElementById("btnCompradores").addEventListener("click", carregarCompradores);
-    document.getElementById("btnMedia").addEventListener("click", carregarMedia);
-
-    window.addEventListener("load", () => {
-        carregarClientes();
-        carregarVeiculos();
-        carregarCompradores();
-        carregarMedia();
-    });
+    window.onload = () => {
+        document.getElementById("btnClientes").click();
+        document.getElementById("btnVeiculos").click();
+        document.getElementById("btnCompradores").click();
+        document.getElementById("btnMedia").click();
+        document.getElementById("btnAntiJoin").click();
+        document.getElementById("btnOuterJoin").click();
+        document.getElementById("btnVeiculosMedia").click();
+        document.getElementById("btnFornecedoresMedia").click();
+    };
 </script>
 </body>
 </html>
