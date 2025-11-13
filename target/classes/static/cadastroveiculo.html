@@ -94,9 +94,17 @@
     document.getElementById("formVeiculo").addEventListener("submit", async function(event) {
         event.preventDefault();
 
+        const ano = parseInt(document.getElementById("ano").value);
+
+        // 🔹 Verificação no frontend
+        if (ano < 2010) {
+            alert("❌ O veículo não pode ser cadastrado: o ano deve ser 2010 ou superior.");
+            return;
+        }
+
         const veiculo = {
             id: parseInt(document.getElementById("id").value),
-            ano: parseInt(document.getElementById("ano").value),
+            ano: ano,
             km: parseInt(document.getElementById("km").value),
             cor: document.getElementById("cor").value,
             estado: document.getElementById("estado").value,
@@ -106,17 +114,18 @@
             cnpj: document.getElementById("cnpj").value
         };
 
-        const response = await fetch("/veiculos", {
+        const response = await fetch("http://localhost:8080/veiculos", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(veiculo)
         });
 
         if (response.ok) {
-            alert("Veículo cadastrado com sucesso!");
+            alert("✅ Veículo cadastrado com sucesso!");
             document.getElementById("formVeiculo").reset();
         } else {
-            alert("Erro ao cadastrar veículo.");
+            const erroTexto = await response.text();
+            alert("❌ Erro ao cadastrar veículo: " + erroTexto);
         }
     });
 </script>

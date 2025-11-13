@@ -32,7 +32,6 @@
 
     <div class="row g-3">
 
-        <!-- Clientes -->
         <div class="col-12 col-lg-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -52,7 +51,6 @@
             </div>
         </div>
 
-        <!-- Veículos -->
         <div class="col-12 col-lg-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -72,7 +70,6 @@
             </div>
         </div>
 
-        <!-- Compradores -->
         <div class="col-12">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -92,7 +89,6 @@
             </div>
         </div>
 
-        <!-- Média salarial -->
         <div class="col-12 col-md-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -109,7 +105,6 @@
             </div>
         </div>
 
-        <!-- Clientes sem compras -->
         <div class="col-12 col-md-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -129,7 +124,6 @@
             </div>
         </div>
 
-        <!-- Fornecedores e vendas -->
         <div class="col-12">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -151,7 +145,6 @@
             </div>
         </div>
 
-        <!-- Veículos acima da média -->
         <div class="col-12 col-md-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -171,7 +164,6 @@
             </div>
         </div>
 
-        <!-- Fornecedores acima da média -->
         <div class="col-12 col-md-6">
             <div class="card p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -191,13 +183,50 @@
             </div>
         </div>
 
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Venda Detalhada (View)</strong>
+                    <div>
+                        <button id="btnVendaDetalhada" class="btn btn-sm btn-info">Atualizar</button>
+                        <span id="loadingVendaDetalhada" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errVendaDetalhada" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 400px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblVendaDetalhada">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>Manutenção Completa (View)</strong>
+                    <div>
+                        <button id="btnManutencao" class="btn btn-sm btn-info">Atualizar</button>
+                        <span id="loadingManutencao" class="spinner-border spinner small spinner-border-sm" style="display:none"></span>
+                    </div>
+                </div>
+                <div id="errManutencao" class="error mb-2" style="display:none"></div>
+                <div style="max-height: 400px; overflow:auto;">
+                    <table class="table table-sm text-light" id="tblManutencao">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <script>
     const base = "";
 
-    // Helpers
     function showSpinner(id, show) {
         document.getElementById(id).style.display = show ? "inline-block" : "none";
     }
@@ -207,13 +236,44 @@
         else { el.style.display = "block"; el.textContent = msg; }
     }
     function escapeHtml(str) {
-        return str.replace(/[&<>"'`=\/]/g, s => ({
+        return (str || "").toString().replace(/[&<>"'`=\/]/g, s => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
             "'": '&#39;', '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
         })[s]);
     }
 
-    // Funções principais
+    async function fetchDynamicView(url, tblId, errId, spinnerId) {
+        const tbl = document.getElementById(tblId);
+        const thead = tbl.querySelector("thead");
+        const tbody = tbl.querySelector("tbody");
+        thead.innerHTML = "";
+        tbody.innerHTML = "";
+        showError(errId, "");
+        showSpinner(spinnerId, true);
+
+        try {
+            const res = await fetch(base + url);
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            if (data.length === 0) {
+                thead.innerHTML = "<tr><th>Nenhum registro encontrado</th></tr>";
+                return;
+            }
+
+            const cols = Object.keys(data[0]);
+            thead.innerHTML = "<tr>" + cols.map(c => `<th>${escapeHtml(c)}</th>`).join("") + "</tr>";
+
+            data.forEach(row => {
+                const line = cols.map(c => `<td>${escapeHtml(row[c])}</td>`).join("");
+                tbody.insertAdjacentHTML("beforeend", `<tr>${line}</tr>`);
+            });
+        } catch (err) {
+            showError(errId, "Erro: " + err.message);
+        } finally {
+            showSpinner(spinnerId, false);
+        }
+    }
+
     async function fetchTable(url, tblId, errId, spinnerId, rowFn) {
         const tbl = document.querySelector(`#${tblId} tbody`);
         tbl.innerHTML = "";
@@ -229,7 +289,6 @@
         } finally { showSpinner(spinnerId, false); }
     }
 
-    // Chamadas
     document.getElementById("btnClientes").onclick = () => fetchTable("/consultas/clientes", "tblClientes", "errClientes", "loadingClientes", r => `<tr><td>${escapeHtml(r)}</td></tr>`);
     document.getElementById("btnVeiculos").onclick = () => fetchTable("/consultas/veiculos", "tblVeiculos", "errVeiculos", "loadingVeiculos", r => `<tr><td>${escapeHtml(r)}</td></tr>`);
     document.getElementById("btnCompradores").onclick = () => fetchTable("/consultas/compradores", "tblCompradores", "errCompradores", "loadingCompradores", r => `<tr><td>${escapeHtml(r.nome || '')}</td><td>${escapeHtml(r.modelo || '')}</td></tr>`);
@@ -238,6 +297,9 @@
     document.getElementById("btnOuterJoin").onclick = () => fetchTable("/consultas/fornecedores-vendas", "tblOuterJoin", "errOuterJoin", "loadingOuterJoin", r => `<tr><td>${r.fornecedor_cnpj || ''}</td><td>${escapeHtml(r.fornecedor_nome || '')}</td><td>${r.idvenda || ''}</td><td>${r.veiculo_id || ''}</td><td>${r.data_venda || ''}</td><td>${r.valor_venda || ''}</td></tr>`);
     document.getElementById("btnVeiculosMedia").onclick = () => fetchTable("/consultas/veiculos-acima-media", "tblVeiculosMedia", "errVeiculosMedia", "loadingVeiculosMedia", r => `<tr><td>${r.id}</td><td>${escapeHtml(r.modelo)}</td><td>${escapeHtml(r.combustivel)}</td><td>${r.preco}</td></tr>`);
     document.getElementById("btnFornecedoresMedia").onclick = () => fetchTable("/consultas/fornecedores-acima-media", "tblFornecedoresMedia", "errFornecedoresMedia", "loadingFornecedoresMedia", r => `<tr><td>${r.CNPJ}</td><td>${escapeHtml(r.Nome)}</td><td>${r.total_vendido}</td></tr>`);
+
+    document.getElementById("btnVendaDetalhada").onclick = () => fetchDynamicView("/consultas/venda-detalhada", "tblVendaDetalhada", "errVendaDetalhada", "loadingVendaDetalhada");
+    document.getElementById("btnManutencao").onclick = () => fetchDynamicView("/consultas/manutencao-completa", "tblManutencao", "errManutencao", "loadingManutencao");
 
     async function carregarMedia() {
         const out = document.getElementById("valorMedia");
@@ -259,6 +321,8 @@
         document.getElementById("btnOuterJoin").click();
         document.getElementById("btnVeiculosMedia").click();
         document.getElementById("btnFornecedoresMedia").click();
+        document.getElementById("btnVendaDetalhada").click();
+        document.getElementById("btnManutencao").click();
     };
 </script>
 </body>
