@@ -1,184 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <title>Lista de Fornecedores</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-    <link href="css/styles.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>Lista de Veículos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1b1b1b;
-            color: #f0f0f0;
-        }
-
-        .navbar {
-            background-color: #111;
-            padding: 1rem;
-        }
-
-        h2 {
-            color: #ffffff;
-            margin-top: 20px;
-        }
-
-        .card {
-            background-color: #2a2a2a;
-            border: none;
-            border-radius: 12px;
-            color: #fff;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .card input {
-            background-color: #1b1b1b;
-            border: 1px solid #555;
-            color: #fff;
-        }
-
-        .card input:read-only {
-            background-color: #262626;
-        }
-
-        .btn-warning {
-            background-color: #ffc107 !important;
-            border: none;
-            color: #000;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800 !important;
-        }
-
-        .btn-success {
-            background-color: #28a745 !important;
-            border: none;
-        }
-
-        .btn-success:hover {
-            background-color: #218838 !important;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d !important;
-            border: none;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268 !important;
-        }
-
-        .btn-danger {
-            background-color: #ff0000 !important;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #0077ff !important;
-        }
+        body { background-color: #1b1b1b; color: #f0f0f0; font-family: 'Inter', sans-serif; }
+        .container { margin-top: 30px; }
+        h2 { text-align: center; color: #fff; margin-bottom: 20px; }
+        .card { background: #2a2a2a; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        .card input { background: #1b1b1b; border: 1px solid #555; color: #fff; }
+        .card input:read-only { background: #262626; }
+        .btn-warning { background: #ffc107; border: none; }
+        .btn-danger { background: #dc3545; border: none; }
+        .btn-success { background: #28a745; border: none; }
     </style>
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg px-4">
-    <div class="container-fluid justify-content-start gap-2"></div>
-</nav>
-
-<div class="container mt-4">
-    <h2>Lista de Fornecedores</h2>
-    <div id="listaFornecedores" class="row g-4"></div>
+<div class="container">
+    <h2>Lista de Veículos</h2>
+    <div id="alerta" class="alert alert-danger d-none" role="alert"></div>
+    <div id="listaVeiculos" class="row"></div>
 </div>
 
 <script>
-    async function carregarFornecedores() {
-        const response = await fetch("/fornecedores");
-        const fornecedores = await response.json();
-        const lista = document.getElementById("listaFornecedores");
+    async function carregarVeiculos() {
+        const response = await fetch("/veiculos");
+        const veiculos = await response.json();
+        const lista = document.getElementById("listaVeiculos");
         lista.innerHTML = "";
 
-        fornecedores.forEach(fornecedor => {
+        veiculos.forEach(v => {
             const col = document.createElement("div");
-            col.className = "col-md-6 col-lg-4";
+            col.className = "col-md-6";
 
             col.innerHTML = `
-                <div class="card p-3">
-                  <form class="d-flex flex-column gap-2" onsubmit="return false;">
-                    <input class="form-control form-control-sm" name="cnpj" value="${fornecedor.cnpj ?? ''}" readonly>
-                    <input class="form-control form-control-sm" name="nome" value="${fornecedor.nome ?? ''}" readonly>
-                    <input class="form-control form-control-sm" name="nomeFantasia" value="${fornecedor.nomeFantasia ?? ''}" readonly>
-                    <input class="form-control form-control-sm" name="telefone" value="${fornecedor.telefone ?? ''}" readonly>
-
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                      <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-warning" onclick="habilitarEdicao(this)">Editar</button>
-                        <button type="button" class="btn btn-success d-none" onclick="salvarEdicao(this)">Salvar</button>
-                        <button type="button" class="btn btn-secondary d-none" onclick="cancelarEdicao()">Cancelar</button>
-                      </div>
-                      <button type="button" class="btn btn-sm btn-danger" onclick="deletarFornecedor('${fornecedor.cnpj}')">Deletar</button>
-                    </div>
-                  </form>
+                <div class="card">
+                    <form onsubmit="return false;" class="d-flex flex-column gap-2">
+                        <input class="form-control" name="id" value="${v.id}" readonly>
+                        <input class="form-control" name="ano" type="number" value="${v.ano}" readonly>
+                        <input class="form-control" name="km" value="${v.km}" readonly>
+                        <input class="form-control" name="cor" value="${v.cor}" readonly>
+                        <input class="form-control" name="estado" value="${v.estado}" readonly>
+                        <input class="form-control" name="preco" value="${v.preco}" readonly>
+                        <input class="form-control" name="modelo" value="${v.modelo}" readonly>
+                        <input class="form-control" name="combustivel" value="${v.combustivel}" readonly>
+                        <input class="form-control" name="cnpj" value="${v.cnpj}" readonly>
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-warning" onclick="habilitarEdicao(this)">Editar</button>
+                                <button class="btn btn-success d-none" onclick="salvarEdicao(this)">Salvar</button>
+                                <button class="btn btn-secondary d-none" onclick="cancelarEdicao()">Cancelar</button>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="deletarVeiculo(${v.id})">Deletar</button>
+                        </div>
+                    </form>
                 </div>
             `;
-
             lista.appendChild(col);
         });
     }
 
-    function habilitarEdicao(botaoEditar) {
-        const form = botaoEditar.closest("form");
-        const inputs = form.querySelectorAll("input:not([name='cnpj'])");
-        inputs.forEach(input => input.readOnly = false);
+    function habilitarEdicao(botao) {
+        const form = botao.closest("form");
+        form.querySelectorAll("input:not([name='id'])").forEach(input => input.readOnly = false);
         toggleBotoes(form, true);
     }
 
     function cancelarEdicao() {
-        carregarFornecedores();
+        carregarVeiculos();
     }
 
-    async function salvarEdicao(botaoSalvar) {
-        const form = botaoSalvar.closest("form");
+    async function salvarEdicao(botao) {
+        const form = botao.closest("form");
         const formData = new FormData(form);
-        const fornecedor = {};
-        formData.forEach((value, key) => fornecedor[key] = value);
+        const veiculo = {};
+        formData.forEach((v, k) => veiculo[k] = v);
 
-        const response = await fetch("/fornecedores", {
+        // 🧠 VALIDAÇÃO: impede salvar veículo com ano < 2010
+        const ano = parseInt(veiculo.ano);
+        const alerta = document.getElementById("alerta");
+        alerta.classList.add("d-none");
+
+        if (isNaN(ano) || ano < 2010) {
+            alerta.textContent = "❌ Ano inválido! O veículo não pode ser anterior a 2010.";
+            alerta.classList.remove("d-none");
+            return; // cancela o envio
+        }
+
+        const response = await fetch("/veiculos", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fornecedor)
+            body: JSON.stringify(veiculo)
         });
 
         if (response.ok) {
-            alert("Fornecedor atualizado com sucesso!");
-            carregarFornecedores();
+            alerta.classList.add("d-none");
+            alert("✅ Veículo atualizado com sucesso!");
+            carregarVeiculos();
         } else {
-            alert("Erro ao atualizar fornecedor.");
+            alerta.textContent = "⚠️ Erro ao atualizar veículo.";
+            alerta.classList.remove("d-none");
         }
     }
 
-    async function deletarFornecedor(cnpj) {
-        if (confirm("Deseja realmente deletar este fornecedor?")) {
-            const response = await fetch(`/fornecedores/${encodeURIComponent(cnpj)}`, {
-                method: "DELETE"
-            });
+    async function deletarVeiculo(id) {
+        if (confirm("Deseja realmente deletar este veículo?")) {
+            const response = await fetch(`/veiculos/${id}`, { method: "DELETE" });
             if (response.ok) {
-                carregarFornecedores();
+                carregarVeiculos();
             } else {
-                alert("Erro ao deletar fornecedor.");
+                alert("Erro ao deletar veículo.");
             }
         }
     }
 
-    function toggleBotoes(form, modoEdicao) {
-        form.querySelector(".btn-warning").classList.toggle("d-none", modoEdicao);
-        form.querySelector(".btn-success").classList.toggle("d-none", !modoEdicao);
-        form.querySelector(".btn-secondary").classList.toggle("d-none", !modoEdicao);
+    function toggleBotoes(form, edicao) {
+        form.querySelector(".btn-warning").classList.toggle("d-none", edicao);
+        form.querySelector(".btn-success").classList.toggle("d-none", !edicao);
+        form.querySelector(".btn-secondary").classList.toggle("d-none", !edicao);
     }
 
-    window.onload = carregarFornecedores;
+    window.onload = carregarVeiculos;
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

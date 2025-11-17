@@ -8,9 +8,9 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/consultas")
-@CrossOrigin(origins = "*")
 public class ConsultaController {
 
+    // 1. Lista nomes dos clientes
     @GetMapping("/clientes")
     public List<String> nomesClientes() {
         List<String> lista = new ArrayList<>();
@@ -30,6 +30,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 2. Lista modelos dos veículos
     @GetMapping("/veiculos")
     public List<String> modelosVeiculos() {
         List<String> lista = new ArrayList<>();
@@ -49,6 +50,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 3. Compradores e veículos
     @GetMapping("/compradores")
     public List<Map<String, String>> compradores() {
         List<Map<String, String>> lista = new ArrayList<>();
@@ -76,6 +78,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 4. Média salarial
     @GetMapping("/media-salario")
     public Double mediaSalario() {
         Double media = null;
@@ -95,6 +98,7 @@ public class ConsultaController {
         return media;
     }
 
+    // 5. Anti Join — clientes que nunca compraram nada
     @GetMapping("/clientes-sem-compras")
     public List<Map<String, Object>> clientesSemCompras() {
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -123,6 +127,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 6. Outer Join — fornecedores e vendas (mesmo sem correspondência)
     @GetMapping("/fornecedores-vendas")
     public List<Map<String, Object>> fornecedoresVendas() {
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -157,6 +162,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 7. Subconsulta 1 — veículos com preço acima da média do mesmo combustível
     @GetMapping("/veiculos-acima-media")
     public List<Map<String, Object>> veiculosAcimaMedia() {
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -190,6 +196,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 8. Subconsulta 2 — fornecedores com vendas acima da média geral
     @GetMapping("/fornecedores-acima-media")
     public List<Map<String, Object>> fornecedoresAcimaMedia() {
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -229,7 +236,7 @@ public class ConsultaController {
         }
         return lista;
     }
-
+    // 9. View venda_detalhada
     @GetMapping("/venda-detalhada")
     public List<Map<String, Object>> viewVendaDetalhada() {
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -243,11 +250,11 @@ public class ConsultaController {
             int colunas = meta.getColumnCount();
 
             while (rs.next()) {
-                Map<String, Object> linha = new LinkedHashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 for (int i = 1; i <= colunas; i++) {
-                    linha.put(meta.getColumnLabel(i), rs.getObject(i));
+                    map.put(meta.getColumnName(i), rs.getObject(i));
                 }
-                lista.add(linha);
+                lista.add(map);
             }
 
         } catch (SQLException e) {
@@ -256,6 +263,7 @@ public class ConsultaController {
         return lista;
     }
 
+    // 10. View manutencao_completa
     @GetMapping("/manutencao-completa")
     public List<Map<String, Object>> viewManutencaoCompleta() {
         List<Map<String, Object>> lista = new ArrayList<>();
@@ -269,11 +277,11 @@ public class ConsultaController {
             int colunas = meta.getColumnCount();
 
             while (rs.next()) {
-                Map<String, Object> linha = new LinkedHashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 for (int i = 1; i <= colunas; i++) {
-                    linha.put(meta.getColumnLabel(i), rs.getObject(i));
+                    map.put(meta.getColumnName(i), rs.getObject(i));
                 }
-                lista.add(linha);
+                lista.add(map);
             }
 
         } catch (SQLException e) {
@@ -281,4 +289,6 @@ public class ConsultaController {
         }
         return lista;
     }
+
+
 }
