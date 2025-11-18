@@ -14,7 +14,7 @@ public class ClienteRepository {
 
     // Inserir cliente
     public void inserir(Cliente cliente) {
-        String sql = "INSERT INTO Cliente (CPF, Nome, idade, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Cliente (CPF, Nome, idade, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -26,6 +26,7 @@ public class ClienteRepository {
             stmt.setString(5, cliente.getEnderecoBairro());
             stmt.setString(6, cliente.getEnderecoRua());
             stmt.setString(7, cliente.getEnderecoNumero());
+            stmt.setString(8, cliente.getEmail());
 
             stmt.executeUpdate();
 
@@ -36,7 +37,7 @@ public class ClienteRepository {
 
     // Atualizar cliente
     public void atualizar(Cliente cliente) {
-        String sql = "UPDATE Cliente SET Nome=?, idade=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=? WHERE CPF=?";
+        String sql = "UPDATE Cliente SET Nome=?, idade=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=?, email=? WHERE CPF=?";
 
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -47,7 +48,8 @@ public class ClienteRepository {
             stmt.setString(4, cliente.getEnderecoBairro());
             stmt.setString(5, cliente.getEnderecoRua());
             stmt.setString(6, cliente.getEnderecoNumero());
-            stmt.setString(7, cliente.getCpf());
+            stmt.setString(7, cliente.getEmail());
+            stmt.setString(8, cliente.getCpf());
 
             stmt.executeUpdate();
 
@@ -89,6 +91,7 @@ public class ClienteRepository {
                 cliente.setEnderecoBairro(rs.getString("enderecoBairro"));
                 cliente.setEnderecoRua(rs.getString("enderecoRua"));
                 cliente.setEnderecoNumero(rs.getString("enderecoNumero"));
+                cliente.setEmail(rs.getString("email"));
 
                 clientes.add(cliente);
             }
