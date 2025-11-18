@@ -1,6 +1,5 @@
-# 🚗 *Concessionária — Sistema Completo com JDBC Puro e Dashboard*
-### Projeto Acadêmico — Banco de Dados (MOD02)  
-### Desenvolvido por: *Arthur Queiroz Silva*
+# 🚗 *Concessionária*
+### Projeto Acadêmico — Banco de Dados (MOD02)
 
 ---
 
