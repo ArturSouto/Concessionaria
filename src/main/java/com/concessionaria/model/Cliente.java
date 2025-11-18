@@ -10,7 +10,6 @@ public class Cliente {
     private String enderecoNumero;
     private String email;
 
-    // Getters e setters
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
 
@@ -33,5 +32,5 @@ public class Cliente {
     public void setEnderecoNumero(String enderecoNumero) { this.enderecoNumero = enderecoNumero; }
 
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }  // setter do email
+    public void setEmail(String email) { this.email = email; }
 }

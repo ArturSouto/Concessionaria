@@ -91,29 +91,30 @@ public class FornecedorRepository {
         return fornecedores;
     }
 
-    // Buscar fornecedor por CNPJ
-    public Fornecedor buscarPorCnpj(String cnpj) {
-        String sql = "SELECT * FROM Fornecedor WHERE CNPJ = ?";
-        Fornecedor fornecedor = null;
+
+    public Fornecedor buscarPorCnpj(String cnpj) throws SQLException {
+        String sql = "SELECT * FROM Fornecedor WHERE CNPJ=?";
 
         try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, cnpj);
-            ResultSet rs = stmt.executeQuery();
+            ps.setString(1, cnpj);
 
-            if (rs.next()) {
-                fornecedor = new Fornecedor();
-                fornecedor.setCnpj(rs.getString("CNPJ"));
-                fornecedor.setNome(rs.getString("Nome"));
-                fornecedor.setNomeFantasia(rs.getString("Nome_Fantasia"));
-                fornecedor.setTelefone(rs.getString("Telefone"));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+
+                    Fornecedor f = new Fornecedor();
+
+                    f.setCnpj(rs.getString("CNPJ")); // <-- FALTAVA ESSA LINHA !!!
+                    f.setNome(rs.getString("Nome"));
+                    f.setNomeFantasia(rs.getString("Nome_Fantasia"));
+                    f.setTelefone(rs.getString("Telefone"));
+
+                    return f;
+                }
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        return fornecedor;
+        return null;
     }
 }

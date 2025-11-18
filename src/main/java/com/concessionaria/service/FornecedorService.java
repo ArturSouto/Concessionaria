@@ -1,31 +1,54 @@
 package com.concessionaria.service;
 
+import com.concessionaria.dao.FornecedorDAO;
 import com.concessionaria.model.Fornecedor;
-import com.concessionaria.repository.FornecedorRepository;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+@Service
 public class FornecedorService {
 
-    private final FornecedorRepository fornecedorRepository = new FornecedorRepository();
+    private final FornecedorDAO dao = new FornecedorDAO();
 
     public void salvarFornecedor(Fornecedor fornecedor) {
-        fornecedorRepository.inserir(fornecedor);
+        try {
+            dao.inserir(fornecedor);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao inserir fornecedor: " + e.getMessage());
+        }
     }
 
     public void atualizarFornecedor(Fornecedor fornecedor) {
-        fornecedorRepository.atualizar(fornecedor);
+        try {
+            dao.atualizar(fornecedor);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar fornecedor: " + e.getMessage());
+        }
     }
 
     public void deletarFornecedor(String cnpj) {
-        fornecedorRepository.deletar(cnpj);
+        try {
+            dao.excluir(cnpj);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao deletar fornecedor: " + e.getMessage());
+        }
     }
 
     public List<Fornecedor> listarTodos() {
-        return fornecedorRepository.listar();
+        try {
+            return dao.listar();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao listar fornecedores: " + e.getMessage());
+        }
     }
 
     public Fornecedor buscarPorCnpj(String cnpj) {
-        return fornecedorRepository.buscarPorCnpj(cnpj);
+        try {
+            return dao.buscarPorCnpj(cnpj);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar fornecedor por CNPJ: " + e.getMessage());
+        }
     }
 }

@@ -17,19 +17,22 @@ public class VeiculoController {
 
     @PostMapping
     public ResponseEntity<String> salvarVeiculo(@RequestBody Veiculo veiculo) {
-        try {
-            veiculoService.salvarVeiculo(veiculo);
-            return ResponseEntity.ok("✅ Veículo salvo com sucesso!");
-        } catch (SQLException e) {
-            String msg = e.getMessage().toLowerCase();
-            if (msg.contains("ano menor que 2010") || msg.contains("ano inválido") || msg.contains("ano < 2010")) {
-                return ResponseEntity.badRequest().body("❌ O veículo não foi inserido: o ano deve ser 2010 ou superior.");
-            }
-            return ResponseEntity.internalServerError().body("❌ Erro ao inserir veículo: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("❌ Erro inesperado: " + e.getMessage());
-        }
+    try {
+        veiculoService.salvarVeiculo(veiculo);
+        return ResponseEntity.ok("✅ Veículo salvo com sucesso!");
+
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body("❌ " + e.getMessage());
+
+    } catch (SQLException e) {
+        return ResponseEntity.internalServerError()
+                .body("❌ Erro de banco ao inserir veículo: " + e.getMessage());
+
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError()
+                .body("❌ Erro inesperado: " + e.getMessage());
     }
+}
 
     @PutMapping
     public ResponseEntity<String> atualizarVeiculo(@RequestBody Veiculo veiculo) {

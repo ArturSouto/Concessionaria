@@ -1,27 +1,34 @@
 package com.concessionaria.service;
 
+import com.concessionaria.dao.VendeDAO;
 import com.concessionaria.model.Vende;
-import com.concessionaria.repository.VendeRepository;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+@Service
 public class VendeService {
 
-    private final VendeRepository vendeRepository = new VendeRepository();
+    private VendeDAO vendeDAO = new VendeDAO();
 
-    public void salvarVenda(Vende vende) {
-        vendeRepository.inserir(vende);
+    public void inserir(Vende venda) throws Exception {
+        vendeDAO.inserir(venda);
     }
 
-    public void atualizarVenda(Vende vende) {
-        vendeRepository.atualizar(vende);
+    public List<Vende> listarTodos() throws Exception {
+        return vendeDAO.listarTodos();
     }
 
-    public void deletarVenda(String idvenda) {
-        vendeRepository.deletar(idvenda);
+    public Vende buscarPorId(String idvenda) throws Exception {
+        return vendeDAO.buscarPorId(idvenda);
     }
 
-    public List<Vende> listarTodas() {
-        return vendeRepository.listar();
+    public void atualizar(Vende venda) throws Exception {
+        vendeDAO.atualizar(venda);
+    }
+
+    public void deletar(String idvenda) throws Exception {
+        vendeDAO.deletar(idvenda);
     }
 }

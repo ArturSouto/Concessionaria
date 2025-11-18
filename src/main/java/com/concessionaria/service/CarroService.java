@@ -1,27 +1,29 @@
 package com.concessionaria.service;
 
+import com.concessionaria.dao.CarroDAO;
 import com.concessionaria.model.Carro;
-import com.concessionaria.repository.CarroRepository;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
-
+@Service
 public class CarroService {
 
-    private final CarroRepository carroRepository = new CarroRepository();
+    private CarroDAO dao = new CarroDAO();
 
-    public void salvarCarro(Carro carro) {
-        carroRepository.inserir(carro);
+    public void inserir(Carro c) {
+        dao.inserir(c);
     }
 
-    public void atualizarCarro(Carro carro) {
-        carroRepository.atualizar(carro);
+    public List<Carro> listar() {
+        return dao.listar();
     }
 
-    public void deletarCarro(int id) {
-        carroRepository.deletar(id);
+    public void atualizar(Carro c) {
+        dao.atualizar(c);
     }
 
-    public List<Carro> listarTodos() {
-        return carroRepository.listar();
+    public void deletar(int id) {
+        dao.deletar(id);
     }
 }

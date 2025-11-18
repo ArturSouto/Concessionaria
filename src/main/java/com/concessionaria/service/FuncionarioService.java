@@ -1,26 +1,46 @@
 package com.concessionaria.service;
 
+import com.concessionaria.dao.FuncionarioDAO;
 import com.concessionaria.model.Funcionario;
-import com.concessionaria.repository.FuncionarioRepository;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+@Service
 public class FuncionarioService {
-    private final FuncionarioRepository funcionarioRepository = new FuncionarioRepository();
+
+    private final FuncionarioDAO dao = new FuncionarioDAO();
 
     public void salvarFuncionario(Funcionario funcionario) {
-        funcionarioRepository.salvar(funcionario);
+        try {
+            dao.inserir(funcionario);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao inserir funcionario: " + e.getMessage());
+        }
     }
 
     public void atualizarFuncionario(Funcionario funcionario) {
-        funcionarioRepository.atualizar(funcionario);
+        try {
+            dao.atualizar(funcionario);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar funcionario: " + e.getMessage());
+        }
     }
 
     public void deletarFuncionario(String cpf) {
-        funcionarioRepository.deletar(cpf);
+        try {
+            dao.excluir(cpf);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao deletar funcionario: " + e.getMessage());
+        }
     }
 
     public List<Funcionario> listarTodos() {
-        return funcionarioRepository.listarTodos();
+        try {
+            return dao.listar();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao listar funcionarios: " + e.getMessage());
+        }
     }
 }

@@ -1,31 +1,53 @@
 package com.concessionaria.service;
 
+import com.concessionaria.dao.ClienteDAO;
 import com.concessionaria.model.Cliente;
-import com.concessionaria.repository.ClienteRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ClienteService {
 
-    private final ClienteRepository clienteRepository = new ClienteRepository();
+    private final ClienteDAO dao = new ClienteDAO();
 
-    // Salvar novo cliente
-    public void salvarCliente(Cliente cliente) {
-        clienteRepository.inserir(cliente);
+    public void salvarCliente(Cliente c) {
+        try {
+            dao.inserir(c);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    // Atualizar cliente
-    public void atualizarCliente(Cliente cliente) {
-        clienteRepository.atualizar(cliente);
-    }
-
-    // Deletar cliente por CPF
-    public void deletarCliente(String cpf) {
-        clienteRepository.deletar(cpf);
-    }
-
-    // Listar todos os clientes
     public List<Cliente> listarTodos() {
-        return clienteRepository.listar();
+        try {
+            return dao.listar();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void atualizarCliente(Cliente c) {
+        try {
+            dao.atualizar(c);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deletarCliente(String cpf) {
+        try {
+            dao.deletar(cpf);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Cliente buscarPorCpf(String cpf) {
+        try {
+            return dao.buscarPorCpf(cpf);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

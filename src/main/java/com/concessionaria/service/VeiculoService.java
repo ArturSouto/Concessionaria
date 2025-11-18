@@ -1,84 +1,44 @@
 package com.concessionaria.service;
 
-import com.concessionaria.config.ConexaoBD;
+import com.concessionaria.dao.VeiculoDAO;
 import com.concessionaria.model.Veiculo;
+import org.springframework.stereotype.Service;
 
-import java.sql.*;
-import java.util.ArrayList;
+
+import java.sql.SQLException;
 import java.util.List;
 
+@Service
 public class VeiculoService {
 
+    private final VeiculoDAO dao = new VeiculoDAO();
+
     public void salvarVeiculo(Veiculo v) throws SQLException {
-        String sql = "INSERT INTO veiculo (id, ano, km, cor, estado, preco, modelo, combustivel, cnpj) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, v.getId());
-            ps.setInt(2, v.getAno());
-            ps.setInt(3, v.getKm());
-            ps.setString(4, v.getCor());
-            ps.setString(5, v.getEstado());
-            ps.setDouble(6, v.getPreco());
-            ps.setString(7, v.getModelo());
-            ps.setString(8, v.getCombustivel());
-            ps.setString(9, v.getCnpj());
-            ps.executeUpdate();
+        // VALIDAÇÃO CORRETA
+        if (v.getAno() < 2010) {
+            throw new IllegalArgumentException("Ano deve ser 2010 ou superior.");
         }
-    }
 
-    public void atualizarVeiculo(Veiculo v) throws SQLException {
-        String sql = "UPDATE veiculo SET ano=?, km=?, cor=?, estado=?, preco=?, modelo=?, combustivel=?, cnpj=? WHERE id=?";
-
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, v.getAno());
-            ps.setInt(2, v.getKm());
-            ps.setString(3, v.getCor());
-            ps.setString(4, v.getEstado());
-            ps.setDouble(5, v.getPreco());
-            ps.setString(6, v.getModelo());
-            ps.setString(7, v.getCombustivel());
-            ps.setString(8, v.getCnpj());
-            ps.setInt(9, v.getId());
-            ps.executeUpdate();
-        }
-    }
-
-    public void deletarVeiculo(int id) throws SQLException {
-        String sql = "DELETE FROM veiculo WHERE id=?";
-
-        try (Connection conn = ConexaoBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
+        dao.inserir(v);
     }
 
     public List<Veiculo> listarTodos() throws SQLException {
-        List<Veiculo> lista = new ArrayList<>();
-        String sql = "SELECT * FROM veiculo";
+        return dao.listarTodos();
+    }
 
-        try (Connection conn = ConexaoBD.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    public Veiculo buscarPorId(int id) throws SQLException {
+        return dao.buscarPorId(id);
+    }
 
-            while (rs.next()) {
-                Veiculo v = new Veiculo();
-                v.setId(rs.getInt("id"));
-                v.setAno(rs.getInt("ano"));
-                v.setKm(rs.getInt("km"));
-                v.setCor(rs.getString("cor"));
-                v.setEstado(rs.getString("estado"));
-                v.setPreco(rs.getDouble("preco"));
-                v.setModelo(rs.getString("modelo"));
-                v.setCombustivel(rs.getString("combustivel"));
-                v.setCnpj(rs.getString("cnpj"));
-                lista.add(v);
-            }
+    public void atualizarVeiculo(Veiculo v) throws SQLException {
+        if (v.getAno() < 2010) {
+            throw new IllegalArgumentException("Ano deve ser 2010 ou superior.");
         }
-        return lista;
+
+        dao.atualizar(v);
+    }
+
+    public void deletarVeiculo(int id) throws SQLException {
+        dao.deletar(id);
     }
 }

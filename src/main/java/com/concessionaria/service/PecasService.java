@@ -1,31 +1,54 @@
 package com.concessionaria.service;
 
+import com.concessionaria.dao.PecasDAO;
 import com.concessionaria.model.Pecas;
-import com.concessionaria.repository.PecasRepository;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
+@Service
 public class PecasService {
 
-    private final PecasRepository pecasRepository = new PecasRepository();
+    private final PecasDAO dao = new PecasDAO();
 
-    // Salvar nova peça
-    public void salvarPeca(Pecas peca) {
-        pecasRepository.inserir(peca);
+    public void salvarPeca(Pecas p) {
+        try {
+            dao.inserir(p);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao salvar peça: " + e.getMessage(), e);
+        }
     }
 
-    // Atualizar peça
-    public void atualizarPeca(Pecas peca) {
-        pecasRepository.atualizar(peca);
-    }
-
-    // Deletar peça por código
-    public void deletarPeca(String codPeca) {
-        pecasRepository.deletar(codPeca);
-    }
-
-    // Listar todas as peças
     public List<Pecas> listarTodas() {
-        return pecasRepository.listar();
+        try {
+            return dao.listarTodas();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao listar peças: " + e.getMessage(), e);
+        }
+    }
+
+    public Pecas buscarPorId(String codPeca) {
+        try {
+            return dao.buscarPorId(codPeca);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar peça: " + e.getMessage(), e);
+        }
+    }
+
+    public void atualizarPeca(Pecas p) {
+        try {
+            dao.atualizar(p);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar peça: " + e.getMessage(), e);
+        }
+    }
+
+    public void deletarPeca(String codPeca) {
+        try {
+            dao.deletar(codPeca);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao deletar peça: " + e.getMessage(), e);
+        }
     }
 }

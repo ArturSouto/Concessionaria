@@ -3,16 +3,12 @@ package com.concessionaria.repository;
 import com.concessionaria.config.ConexaoBD;
 import com.concessionaria.model.Cliente;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteRepository {
 
-    // Inserir cliente
     public void inserir(Cliente cliente) {
         String sql = "INSERT INTO Cliente (CPF, Nome, idade, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -35,7 +31,6 @@ public class ClienteRepository {
         }
     }
 
-    // Atualizar cliente
     public void atualizar(Cliente cliente) {
         String sql = "UPDATE Cliente SET Nome=?, idade=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=?, email=? WHERE CPF=?";
 
@@ -58,7 +53,6 @@ public class ClienteRepository {
         }
     }
 
-    // Deletar cliente
     public void deletar(String cpf) {
         String sql = "DELETE FROM Cliente WHERE CPF=?";
 
@@ -73,7 +67,6 @@ public class ClienteRepository {
         }
     }
 
-    // Listar clientes
     public List<Cliente> listar() {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM Cliente";

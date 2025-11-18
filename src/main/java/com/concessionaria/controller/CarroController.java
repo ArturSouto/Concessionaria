@@ -10,28 +10,31 @@ import java.util.List;
 @RequestMapping("/carros")
 public class CarroController {
 
-    private final CarroService carroService = new CarroService();
+    private CarroService service = new CarroService();
 
     @PostMapping
-    public String salvarCarro(@RequestBody Carro carro) {
-        carroService.salvarCarro(carro);
-        return "Carro salvo com sucesso!";
-    }
-
-    @PutMapping
-    public String atualizarCarro(@RequestBody Carro carro) {
-        carroService.atualizarCarro(carro);
-        return "Carro atualizado com sucesso!";
-    }
-
-    @DeleteMapping("/{id}")
-    public String deletarCarro(@PathVariable int id) {
-        carroService.deletarCarro(id);
-        return "Carro deletado com sucesso!";
+    public String salvar(@RequestBody Carro carro) {
+        service.inserir(carro);
+        return "Carro inserido com sucesso!";
     }
 
     @GetMapping
-    public List<Carro> listarCarros() {
-        return carroService.listarTodos();
+    public List<Carro> listar() {
+        return service.listar();
+    }
+
+    @PutMapping("/{id}")
+    public String atualizar(@PathVariable int id, @RequestBody Carro carro) {
+        carro.setId(id);
+        service.atualizar(carro);
+        return "Carro atualizado!";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deletar(@PathVariable int id) {
+        service.deletar(id);
+        return "Carro removido!";
     }
 }
+
+
