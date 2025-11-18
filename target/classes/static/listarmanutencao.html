@@ -39,10 +39,10 @@
                     <form onsubmit="return false;" class="d-flex flex-column gap-2">
                         <input class="form-control" name="idmanutencao" value="${m.idmanutencao}" readonly>
                         <input class="form-control" name="id" value="${m.id ?? ''}" readonly>
-                        <input class="form-control" name="cpfFuncionario" value="${m.cpfFuncionario ?? ''}" readonly>
                         <textarea class="form-control" name="descricao" rows="2" readonly>${m.descricao ?? ''}</textarea>
                         <input class="form-control" name="dataManutencao" value="${m.dataManutencao ?? ''}" readonly>
-                        <input class="form-control" name="custo" value="${m.custo ?? ''}" readonly>
+                        <input class="form-control" name="custos" value="${m.custos ?? ''}" readonly>
+
                         <div class="d-flex justify-content-between mt-2">
                             <div class="btn-group btn-group-sm">
                                 <button class="btn btn-warning" onclick="habilitarEdicao(this)">Editar</button>
@@ -60,7 +60,8 @@
 
     function habilitarEdicao(botao) {
         const form = botao.closest("form");
-        form.querySelectorAll("input:not([name='idmanutencao']), textarea").forEach(input => input.readOnly = false);
+        form.querySelectorAll("input:not([name='idmanutencao']), textarea")
+            .forEach(input => input.readOnly = false);
         toggleBotoes(form, true);
     }
 

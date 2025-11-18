@@ -4,26 +4,47 @@ import com.concessionaria.dao.CarroDAO;
 import com.concessionaria.model.Carro;
 import org.springframework.stereotype.Service;
 
-
+import java.sql.SQLException;
 import java.util.List;
+
 @Service
 public class CarroService {
 
-    private CarroDAO dao = new CarroDAO();
+    private final CarroDAO carroDAO;
 
-    public void inserir(Carro c) {
-        dao.inserir(c);
+    public CarroService(CarroDAO carroDAO) {
+        this.carroDAO = carroDAO;
     }
 
-    public List<Carro> listar() {
-        return dao.listar();
+    public void inserirCarro(Carro carro) {
+        try {
+            carroDAO.inserir(carro);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inserir carro", e);
+        }
     }
 
-    public void atualizar(Carro c) {
-        dao.atualizar(c);
+    public List<Carro> listarCarros() {
+        try {
+            return carroDAO.listar();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar carros", e);
+        }
     }
 
-    public void deletar(int id) {
-        dao.deletar(id);
+    public void atualizarCarro(Carro carro) {
+        try {
+            carroDAO.atualizar(carro);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar carro", e);
+        }
+    }
+
+    public void deletarCarro(int id) {
+        try {
+            carroDAO.deletar(id);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao deletar carro", e);
+        }
     }
 }

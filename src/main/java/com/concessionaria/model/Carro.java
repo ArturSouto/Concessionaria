@@ -1,15 +1,15 @@
 package com.concessionaria.model;
 
 public class Carro {
+
     private int id;
     private int portas;
     private String cambio;
-    private int idVeiculo;
 
-    // Getters e setters
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -17,6 +17,7 @@ public class Carro {
     public int getPortas() {
         return portas;
     }
+
     public void setPortas(int portas) {
         this.portas = portas;
     }
@@ -24,14 +25,8 @@ public class Carro {
     public String getCambio() {
         return cambio;
     }
+
     public void setCambio(String cambio) {
         this.cambio = cambio;
-    }
-
-    public int getIdVeiculo() {
-        return idVeiculo;
-    }
-    public void setIdVeiculo(int idVeiculo) {
-        this.idVeiculo = idVeiculo;
     }
 }

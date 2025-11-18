@@ -8,33 +8,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/carros")
+@CrossOrigin("*")
 public class CarroController {
 
-    private CarroService service = new CarroService();
+    private final CarroService carroService;
+
+    public CarroController(CarroService carroService) {
+        this.carroService = carroService;
+    }
 
     @PostMapping
-    public String salvar(@RequestBody Carro carro) {
-        service.inserir(carro);
-        return "Carro inserido com sucesso!";
+    public void inserir(@RequestBody Carro carro) {
+        carroService.inserirCarro(carro);
     }
 
     @GetMapping
     public List<Carro> listar() {
-        return service.listar();
+        return carroService.listarCarros();
     }
 
-    @PutMapping("/{id}")
-    public String atualizar(@PathVariable int id, @RequestBody Carro carro) {
-        carro.setId(id);
-        service.atualizar(carro);
-        return "Carro atualizado!";
+    @PutMapping
+    public void atualizar(@RequestBody Carro carro) {
+        carroService.atualizarCarro(carro);
     }
 
     @DeleteMapping("/{id}")
-    public String deletar(@PathVariable int id) {
-        service.deletar(id);
-        return "Carro removido!";
+    public void deletar(@PathVariable int id) {
+        carroService.deletarCarro(id);
     }
 }
-
-

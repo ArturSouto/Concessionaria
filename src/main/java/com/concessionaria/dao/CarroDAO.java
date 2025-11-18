@@ -1,37 +1,37 @@
 package com.concessionaria.dao;
 
+import com.concessionaria.config.ConexaoBD;
 import com.concessionaria.model.Carro;
-import com.concessionaria.util.ConnectionFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class CarroDAO {
 
-    public void inserir(Carro c) {
+    public void inserir(Carro c) throws SQLException {
         String sql = "INSERT INTO Carro (id, portas, cambio) VALUES (?, ?, ?)";
 
-        try (Connection conn = ConnectionFactory.getConnection();
+        try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, c.getId());
             ps.setInt(2, c.getPortas());
             ps.setString(3, c.getCambio());
-            ps.executeUpdate();
 
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao inserir Carro: " + e.getMessage());
+            ps.executeUpdate();
         }
     }
 
-    public List<Carro> listar() {
+    public List<Carro> listar() throws SQLException {
         List<Carro> lista = new ArrayList<>();
         String sql = "SELECT * FROM Carro";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConexaoBD.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 Carro c = new Carro();
@@ -40,41 +40,32 @@ public class CarroDAO {
                 c.setCambio(rs.getString("cambio"));
                 lista.add(c);
             }
-
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao listar Carros: " + e.getMessage());
         }
-
         return lista;
     }
 
-    public void atualizar(Carro c) {
+    public void atualizar(Carro c) throws SQLException {
         String sql = "UPDATE Carro SET portas=?, cambio=? WHERE id=?";
 
-        try (Connection conn = ConnectionFactory.getConnection();
+        try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, c.getPortas());
             ps.setString(2, c.getCambio());
             ps.setInt(3, c.getId());
-            ps.executeUpdate();
 
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao atualizar Carro: " + e.getMessage());
+            ps.executeUpdate();
         }
     }
 
-    public void deletar(int id) {
+    public void deletar(int id) throws SQLException {
         String sql = "DELETE FROM Carro WHERE id=?";
 
-        try (Connection conn = ConnectionFactory.getConnection();
+        try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao deletar Carro: " + e.getMessage());
         }
     }
 }
