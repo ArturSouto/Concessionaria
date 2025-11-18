@@ -116,7 +116,13 @@
                         <button type="button" class="btn btn-success d-none" onclick="salvarEdicao(this)">Salvar</button>
                         <button type="button" class="btn btn-secondary d-none" onclick="cancelarEdicao()">Cancelar</button>
                       </div>
-                      <button type="button" class="btn btn-sm btn-danger" onclick="deletarFornecedor('${fornecedor.cnpj}')">Deletar</button>
+
+                      <!-- BOTÃO DELETE JÁ CORRIGIDO -->
+                      <button type="button" class="btn btn-sm btn-danger"
+                          onclick="deletarFornecedor('${fornecedor.cnpj}')">
+                          Deletar
+                      </button>
+
                     </div>
                   </form>
                 </div>
@@ -157,11 +163,20 @@
         }
     }
 
+    /* =============================
+       FUNÇÃO DELETE DEFINITIVA
+       ============================= */
     async function deletarFornecedor(cnpj) {
+
         if (confirm("Deseja realmente deletar este fornecedor?")) {
-            const response = await fetch(`/fornecedores/${encodeURIComponent(cnpj)}`, {
+
+            const url = `/fornecedores/delete?cnpj=${encodeURIComponent(cnpj)}`;
+            console.log("URL chamada:", url);
+
+            const response = await fetch(url, {
                 method: "DELETE"
             });
+
             if (response.ok) {
                 carregarFornecedores();
             } else {

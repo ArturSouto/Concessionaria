@@ -2,7 +2,6 @@ package com.concessionaria.dao;
 
 import com.concessionaria.config.ConexaoBD;
 import com.concessionaria.model.Fornecedor;
-//import com.concessionaria.model.Funcionario;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -84,6 +83,9 @@ public class FornecedorDAO {
         }
     }
 
+    // ================================
+    // BUSCAR POR CNPJ (corrigido)
+    // ================================
     public Fornecedor buscarPorCnpj(String cnpj) throws SQLException {
         String sql = "SELECT * FROM Fornecedor WHERE CNPJ=?";
 
@@ -97,9 +99,12 @@ public class FornecedorDAO {
 
                     Fornecedor f = new Fornecedor();
 
+                    // ❗ CORREÇÃO: AGORA O CNPJ É PREENCHIDO
+                    f.setCnpj(rs.getString("CNPJ"));
                     f.setNome(rs.getString("Nome"));
                     f.setNomeFantasia(rs.getString("Nome_Fantasia"));
                     f.setTelefone(rs.getString("Telefone"));
+
                     return f;
                 }
             }
@@ -107,5 +112,4 @@ public class FornecedorDAO {
 
         return null;
     }
-
 }

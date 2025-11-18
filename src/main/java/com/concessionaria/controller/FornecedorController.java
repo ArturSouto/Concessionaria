@@ -24,8 +24,8 @@ public class FornecedorController {
         return "Fornecedor atualizado com sucesso!";
     }
 
-    @DeleteMapping("/{cnpj}")
-    public String deletarFornecedor(@PathVariable String cnpj) {
+    @DeleteMapping("/delete")
+    public String deletarFornecedor(@RequestParam String cnpj) {
         fornecedorService.deletarFornecedor(cnpj);
         return "Fornecedor deletado com sucesso!";
     }
