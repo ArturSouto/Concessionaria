@@ -4,50 +4,47 @@ import com.concessionaria.dao.ClienteDAO;
 import com.concessionaria.model.Cliente;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
 public class ClienteService {
 
-    private final ClienteDAO dao = new ClienteDAO();
+    private final ClienteDAO clienteDAO;
 
-    public void salvarCliente(Cliente c) {
+    public ClienteService(ClienteDAO clienteDAO) {
+        this.clienteDAO = clienteDAO;
+    }
+
+    public List<Cliente> listarClientes() {
         try {
-            dao.inserir(c);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return clienteDAO.listar();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar clientes: " + e.getMessage());
         }
     }
 
-    public List<Cliente> listarTodos() {
+    public void inserirCliente(Cliente cliente) {
         try {
-            return dao.listar();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            clienteDAO.inserir(cliente);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inserir cliente: " + e.getMessage());
         }
     }
 
-    public void atualizarCliente(Cliente c) {
+    public void atualizarCliente(Cliente cliente) {
         try {
-            dao.atualizar(c);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            clienteDAO.atualizar(cliente);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar cliente: " + e.getMessage());
         }
     }
 
     public void deletarCliente(String cpf) {
         try {
-            dao.deletar(cpf);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Cliente buscarPorCpf(String cpf) {
-        try {
-            return dao.buscarPorCpf(cpf);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            clienteDAO.deletar(cpf);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao deletar cliente: " + e.getMessage());
         }
     }
 }

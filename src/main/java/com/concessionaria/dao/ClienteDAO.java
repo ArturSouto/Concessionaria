@@ -2,15 +2,19 @@ package com.concessionaria.dao;
 
 import com.concessionaria.config.ConexaoBD;
 import com.concessionaria.model.Cliente;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class ClienteDAO {
 
     public void inserir(Cliente c) throws SQLException {
-        String sql = "INSERT INTO Cliente (CPF, Nome, idade, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Cliente (CPF, Nome, idade, enderecoCEP, enderecoBairro, enderecoRua, enderecoNumero, email) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -30,6 +34,7 @@ public class ClienteDAO {
     public List<Cliente> listar() throws SQLException {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM Cliente";
+
         try (Connection conn = ConexaoBD.getConnection();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -47,11 +52,14 @@ public class ClienteDAO {
                 lista.add(c);
             }
         }
+
         return lista;
     }
 
     public void atualizar(Cliente c) throws SQLException {
-        String sql = "UPDATE Cliente SET Nome=?, idade=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=?, email=? WHERE CPF=?";
+        String sql = "UPDATE Cliente SET Nome=?, idade=?, enderecoCEP=?, enderecoBairro=?, enderecoRua=?, enderecoNumero=?, email=? " +
+                "WHERE CPF=?";
+
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -70,6 +78,7 @@ public class ClienteDAO {
 
     public void deletar(String cpf) throws SQLException {
         String sql = "DELETE FROM Cliente WHERE CPF=?";
+
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -80,10 +89,12 @@ public class ClienteDAO {
 
     public Cliente buscarPorCpf(String cpf) throws SQLException {
         String sql = "SELECT * FROM Cliente WHERE CPF=?";
+
         try (Connection conn = ConexaoBD.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cpf);
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Cliente c = new Cliente();
@@ -99,6 +110,7 @@ public class ClienteDAO {
                 }
             }
         }
+
         return null;
     }
 }

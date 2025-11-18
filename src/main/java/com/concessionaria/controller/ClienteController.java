@@ -2,45 +2,59 @@ package com.concessionaria.controller;
 
 import com.concessionaria.model.Cliente;
 import com.concessionaria.service.ClienteService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
+@CrossOrigin(origins = "*")
 public class ClienteController {
 
-    @Autowired
-    private ClienteService service;
+    private final ClienteService clienteService;
 
-    @PostMapping
-    public String salvar(@RequestBody Cliente cliente) throws SQLException {
-        service.salvarCliente(cliente);;
-        return "Cliente inserido com sucesso!";
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
 
     @GetMapping
-    public List<Cliente> listar() throws SQLException {
-        return service.listarTodos();
+    public List<Cliente> listarClientes() {
+        return clienteService.listarClientes();
     }
 
-    @GetMapping("/{cpf}")
-    public Cliente buscarPorCpf(@PathVariable String cpf) throws SQLException {
-        return service.buscarPorCpf(cpf);
+    @PostMapping
+    public ResponseEntity<String> cadastrarCliente(@RequestBody Cliente cliente) {
+        try {
+            clienteService.inserirCliente(cliente);
+            return ResponseEntity.ok("Cliente cadastrado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao cadastrar cliente: " + e.getMessage());
+        }
     }
 
-    @PutMapping("/{cpf}")
-    public String atualizar(@PathVariable String cpf, @RequestBody Cliente cliente) throws SQLException {
-        cliente.setCpf(cpf);
-        service.atualizarCliente(cliente);
-        return "Cliente atualizado com sucesso!";
+    @PutMapping
+    public ResponseEntity<String> atualizarCliente(@RequestBody Cliente cliente) {
+        try {
+            clienteService.atualizarCliente(cliente);
+            return ResponseEntity.ok("Cliente atualizado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao atualizar cliente: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{cpf}")
-    public String deletar(@PathVariable String cpf) throws SQLException {
-        service.deletarCliente(cpf);
-        return "Cliente removido com sucesso!";
+    public ResponseEntity<String> deletarCliente(@PathVariable String cpf) {
+        try {
+            clienteService.deletarCliente(cpf);
+            return ResponseEntity.ok("Cliente deletado com sucesso!");
+        } catch (Exception e) {
+            if (e.getMessage().contains("foreign key") ||
+                    e.getMessage().contains("a foreign key constraint fails")) {
+                return ResponseEntity.status(400)
+                        .body("Não é possível deletar: este cliente possui vendas associadas.");
+            }
+            return ResponseEntity.status(500).body("Erro ao deletar cliente: " + e.getMessage());
+        }
     }
 }

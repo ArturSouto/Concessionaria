@@ -49,7 +49,13 @@
             col.innerHTML = `
                 <div class="card p-3">
                   <form class="d-flex flex-column gap-2" onsubmit="return false;">
+
+                    <!-- CPF VISÍVEL (readonly) -->
                     <input class="form-control form-control-sm" name="cpf" value="${cliente.cpf ?? ''}" readonly>
+
+                    <!-- CPF HIDDEN (para garantir que seja enviado no PUT) -->
+                    <input type="hidden" name="cpf" value="${cliente.cpf ?? ''}">
+
                     <input class="form-control form-control-sm" name="nome" value="${cliente.nome ?? ''}" readonly>
                     <input class="form-control form-control-sm" name="idade" value="${cliente.idade ?? ''}" readonly>
                     <input class="form-control form-control-sm" name="email" value="${cliente.email ?? ''}" readonly>
@@ -66,6 +72,7 @@
                       </div>
                       <button type="button" class="btn btn-sm btn-danger" onclick="deletarCliente('${cliente.cpf}')">Deletar</button>
                     </div>
+
                   </form>
                 </div>
             `;
@@ -76,7 +83,7 @@
 
     function habilitarEdicao(botaoEditar) {
         const form = botaoEditar.closest("form");
-        const inputs = form.querySelectorAll("input:not([name='cpf'])");
+        const inputs = form.querySelectorAll("input:not([name='cpf']):not([type='hidden'])");
         inputs.forEach(input => input.readOnly = false);
         toggleBotoes(form, true);
     }
@@ -90,6 +97,8 @@
         const formData = new FormData(form);
         const cliente = {};
         formData.forEach((value, key) => cliente[key] = value);
+
+        console.log("ENVIANDO UPDATE:", cliente);
 
         const response = await fetch("/clientes", {
             method: "PUT",
@@ -110,6 +119,7 @@
             const response = await fetch(`/clientes/${encodeURIComponent(cpf)}`, {
                 method: "DELETE"
             });
+
             if (response.ok) {
                 carregarClientes();
             } else {
